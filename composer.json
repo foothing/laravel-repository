@@ -1,0 +1,20 @@
+{
+	"name": "foothing/common",
+	"description": "Common utilities.",
+	"authors": [
+		{
+			"name": "brazorf",
+			"email": "fabrizio.ranieri@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"illuminate\database": "5.1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Foothing\\": "src/Foothing/"
+		}
+	},
+	"minimum-stability": "stable"
+}

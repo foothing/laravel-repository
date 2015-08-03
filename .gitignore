@@ -1,0 +1,5 @@
+/vendor
+/node_modules
+vendor/
+bower_components/
+.idea
