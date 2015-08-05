@@ -5,6 +5,7 @@ use Foothing\Common\Repository\RepositoryInterface;
 
 abstract class AbstractEloquentRepository implements RepositoryInterface {
 	protected $model;
+	protected $refreshFlag;
 
 	function __construct(\Illuminate\Database\Eloquent\Model $model) {
 		$this->model = $model;
@@ -28,6 +29,14 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		return $this->findAll($limit, $offset);
 	}
 
+	function findBy($attribute, $value, $operator = '=') {
+		return $this->model->where($attribute, $operator, $value)->get();
+	}
+
+	function findOneBy($attribute, $value, $operator = '=') {
+		return $this->model->where($attribute, $operator, $value)->first();
+	}
+
 	function create($entity) {
 		if ($entity->save()) {
 			return $entity;
@@ -42,5 +51,15 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 
 	function delete($entity) {
 		return $entity->delete();
+	}
+
+	function refresh() {
+		$this->refreshFlag = true;
+		return $this;
+	}
+
+	function reset() {
+		$this->refreshFlag = false;
+		return $this;
 	}
 }
