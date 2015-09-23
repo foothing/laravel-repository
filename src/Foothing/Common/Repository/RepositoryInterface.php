@@ -1,6 +1,8 @@
 <?php
 namespace Foothing\Common\Repository;
 
+use Foothing\Common\Request\AbstractRemoteQuery;
+
 interface RepositoryInterface {
 
 	//
@@ -12,9 +14,11 @@ interface RepositoryInterface {
 	function find($id);
 	function all();
 	function findAll($limit = null, $offset = null);
-	function findAdvanced($params = null, $limit = null, $offset = null);
+
 	function findBy($attribute, $value, $operator = '=');
 	function findOneBy($attribute, $value, $operator = '=');
+	function findAdvanced(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
+
 	function create($entity);
 	function update($entity);
 	function delete($entity);
