@@ -2,6 +2,7 @@
 namespace Foothing\Common\Repository\Eloquent;
 
 use Foothing\Common\Repository\RepositoryInterface;
+use Foothing\Common\Request\AbstractRemoteQuery;
 
 abstract class AbstractEloquentRepository implements RepositoryInterface {
 	protected $model;
@@ -22,10 +23,32 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		return $this->model->paginate($limit);
 	}
 
-	function findAdvanced($params = null, $limit = null, $offset = null) {
-		// Prototype for filtered and ordered item list.
-		// Default implementation returns findAll().
-		return $this->findAll($limit, $offset);
+	function findAdvanced(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
+		// Check if we have input parameters.
+		if ($params) {
+			$queryBuilder = $this->model;
+
+			// Apply sorting criteria.
+			if ( $params->sortEnabled ) {
+				$queryBuilder = $this->model->orderBy($params->sortField, $params->sortDirection);
+			}
+
+			// Apply filters.
+			if ( $params->filterEnabled ) {
+				foreach ($params->filters as $filter) {
+					if ($filter->operator == 'like') {
+						$filter->value = "%{$filter->value}%";
+					}
+					$queryBuilder = $queryBuilder->where($filter->name, $filter->operator, $filter->value);
+				}
+			}
+
+			return $queryBuilder->paginate($limit);
+		}
+
+		else {
+			return $this->findAll($limit, $offset);
+		}
 	}
 
 	function create($entity) {
