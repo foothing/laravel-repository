@@ -85,4 +85,8 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		$this->refreshFlag = false;
 		return $this;
 	}
+
+	function validationRules() { return []; }
+
+	function validate() { return true; }
 }

@@ -40,4 +40,9 @@ interface RepositoryInterface {
 	 * @return self
 	 */
 	function reset();
+
+	function validationRules();
+
+	function validate();
+
 }
