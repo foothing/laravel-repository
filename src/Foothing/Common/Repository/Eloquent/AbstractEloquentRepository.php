@@ -66,4 +66,19 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 	function delete($entity) {
 		return $entity->delete();
 	}
+
+	function refresh() {
+		$this->refreshFlag = true;
+		return $this;
+	}
+
+	function reset() {
+		$this->refreshFlag = false;
+		return $this;
+	}
+
+	function validationRules() { return []; }
+
+	function validate() { return true; }
+
 }

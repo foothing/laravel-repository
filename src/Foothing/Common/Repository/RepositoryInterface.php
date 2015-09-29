@@ -12,4 +12,27 @@ interface RepositoryInterface {
 	function create($entity);
 	function update($entity);
 	function delete($entity);
+
+	//
+	//
+	//	Helpers.
+	//
+	//
+
+	/**
+	 * Forces the next read query to skip cached values.
+	 * @return self
+	 */
+	function refresh();
+
+	/**
+	 * Reset the refresh flag.
+	 * @return self
+	 */
+	function reset();
+
+	function validationRules();
+
+	function validate();
+
 }
