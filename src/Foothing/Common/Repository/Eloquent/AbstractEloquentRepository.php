@@ -88,5 +88,18 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 
 	function validationRules() { return []; }
 
-	function validate() { return true; }
+	function validationRulesPartial($partial) {
+		$rules = $this->validationRules();
+		if ( empty($partial) ) {
+			return $rules;
+		}
+
+		$partial = array($partial);
+		$result = [];
+		foreach ($partial as $field) {
+			$result[ $field ] = $rules[$field];
+		}
+		return $result;
+	}
+
 }

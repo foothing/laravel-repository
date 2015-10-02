@@ -43,6 +43,6 @@ interface RepositoryInterface {
 
 	function validationRules();
 
-	function validate();
+	function validationRulesPartial($partial);
 
 }
