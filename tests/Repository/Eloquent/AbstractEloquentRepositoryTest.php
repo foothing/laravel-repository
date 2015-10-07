@@ -160,6 +160,31 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		$this->assertEmpty($person->roles);
 	}
 
+	function testAutoEagerLoading() {
+		$person = new Person();
+
+		// We expect a new person to contain the
+		// relations defined with the ResourceInterface 'unit'.
+		$person = $this->repository->create($person);
+		$this->assertEquals(0, $person->roles->count());
+		$this->assertEquals(0, $person->children->count());
+
+		// Check auto-eager-loading.
+		$homer = $this->repository->find(1);
+		$this->assertEquals(1, $homer->roles->count());
+		$this->assertEquals(3, $homer->children->count());
+
+		$simpsons = $this->repository->all();
+		$simpsons = json_decode( json_encode($simpsons) );
+		$this->assertEquals(1, count($simpsons[0]->roles));
+		$this->assertFalse(property_exists($simpsons[0], 'children'));
+
+		// Check that repository with() method override default settings.
+		$simpsons = $this->repository->with(['roles', 'children'])->all();
+		$simpsons = json_decode( json_encode($simpsons) );
+		$this->assertEquals(1, count($simpsons[0]->roles));
+		$this->assertEquals(3, count($simpsons[0]->children));
+	}
 }
 
 class Repository extends \Foothing\Common\Repository\Eloquent\AbstractEloquentRepository {

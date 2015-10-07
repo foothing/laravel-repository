@@ -4,30 +4,78 @@ namespace Foothing\Common\Repository\Eloquent;
 use Foothing\Common\Repository\Criteria;
 use Foothing\Common\Repository\CriteriaInterface;
 use Foothing\Common\Repository\RepositoryInterface;
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Common\Resources\ResourceInterface;
 
 abstract class AbstractEloquentRepository implements RepositoryInterface {
 	protected $model;
+
+	/**
+	 * @var array
+	 * Array of relations we want to eager load.
+	 */
 	protected $eagerLoad = [];
+
+	/**
+	 * @var bool
+	 * If the model implements ResourceInterface we use
+	 * its setting to decide whether eager load relations.
+	 * Note that this behaviour will be overwritten upon
+	 * explicit with() invocations.
+	 */
+	protected $enableAutoEagerLoading = false;
 
 	function __construct(\Illuminate\Database\Eloquent\Model $model) {
 		$this->model = $model;
+		if ( $this->model instanceof ResourceInterface ) {
+			$this->enableAutoEagerLoading = true;
+		}
 	}
 
+	/**
+	 * Utility method for flags reset. Always use this to return results.
+	 *
+	 * @param $result
+	 * The result we want to return
+	 *
+	 * @return mixed
+	 */
 	protected function finalize($result) {
 		$this->eagerLoad = [];
 		return $result;
 	}
 
+	/**
+	 * Check whether the autoEagerLoading feature has to be applied.
+	 *
+	 * @param string $fetch
+	 */
+	protected function applyAutoEagerLoading($fetch = 'unit') {
+		if ( ! empty($this->eagerLoad) ) {
+			return;
+		}
+
+		if ( $this->enableAutoEagerLoading && $fetch == 'unit') {
+			$this->eagerLoad = $this->model->unitRelations();
+		}
+
+		else if ( $this->enableAutoEagerLoading && $fetch == 'list') {
+			$this->eagerLoad = $this->model->listRelations();
+		}
+	}
+
 	function find($id) {
+		$this->applyAutoEagerLoading('unit');
 		return $this->finalize( $this->model->with( $this->eagerLoad )->find($id) );
 	}
 
 	function all() {
+		$this->applyAutoEagerLoading('list');
 		return $this->finalize( $this->model->with( $this->eagerLoad )->get() );
 	}
 
 	function paginate(CriteriaInterface $criteria = null, $limit = null, $offset = null) {
+		$this->applyAutoEagerLoading('list');
+
 		// Check if we have input parameters.
 		if ($criteria) {
 			$queryBuilder = $this->model;
@@ -47,6 +95,8 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 	}
 
 	function create($entity) {
+		$this->applyAutoEagerLoading('unit');
+
 		if ($entity->save()) {
 			if ( $this->eagerLoad ) {
 				$entity->load( $this->eagerLoad );
@@ -61,6 +111,8 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		if ( ! $entity->exists ) {
 			throw new \Exception("Cannot update entity that doesn't exists");
 		}
+
+		$this->applyAutoEagerLoading('unit');
 
 		if ($entity->save()) {
 			if ( $this->eagerLoad ) {
