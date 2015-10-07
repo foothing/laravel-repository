@@ -13,7 +13,7 @@ interface RepositoryInterface {
 
 	function find($id);
 	function all();
-	function paginate(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
+	function paginate(CriteriaInterface $params = null, $limit = null, $offset = null);
 
 	function create($entity);
 	function update($entity);

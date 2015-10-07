@@ -1,6 +1,8 @@
 <?php
 namespace Foothing\Common\Repository\Eloquent;
 
+use Foothing\Common\Repository\Criteria;
+use Foothing\Common\Repository\CriteriaInterface;
 use Foothing\Common\Repository\RepositoryInterface;
 use Foothing\Common\Request\AbstractRemoteQuery;
 
@@ -25,25 +27,16 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		return $this->finalize( $this->model->with( $this->eagerLoad )->get() );
 	}
 
-	function paginate(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
+	function paginate(CriteriaInterface $criteria = null, $limit = null, $offset = null) {
 		// Check if we have input parameters.
-		if ($params) {
+		if ($criteria) {
 			$queryBuilder = $this->model;
 
 			// Apply sorting criteria.
-			if ( $params->sortEnabled ) {
-				$queryBuilder = $this->model->orderBy($params->sortField, $params->sortDirection);
-			}
+			$queryBuilder = $criteria->applyOrderBy($queryBuilder);
 
 			// Apply filters.
-			if ( $params->filterEnabled ) {
-				foreach ($params->filters as $filter) {
-					if ($filter->operator == 'like') {
-						$filter->value = "%{$filter->value}%";
-					}
-					$queryBuilder = $queryBuilder->where($filter->name, $filter->operator, $filter->value);
-				}
-			}
+			$queryBuilder = $criteria->applyFilters($queryBuilder);
 
 			return $this->finalize( $queryBuilder->with( $this->eagerLoad )->paginate($limit) );
 		}
