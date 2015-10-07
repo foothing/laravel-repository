@@ -19,11 +19,7 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		return $this->model->all();
 	}
 
-	function findAll($limit = null, $offset = null) {
-		return $this->model->paginate($limit);
-	}
-
-	function findAdvanced(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
+	function findAll(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
 		// Check if we have input parameters.
 		if ($params) {
 			$queryBuilder = $this->model;

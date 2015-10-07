@@ -4,10 +4,16 @@ namespace Foothing\Common\Repository;
 use Foothing\Common\Request\AbstractRemoteQuery;
 
 interface RepositoryInterface {
+
+	//
+	//
+	//	Crud.
+	//
+	//
+
 	function find($id);
 	function all();
-	function findAll($limit = null, $offset = null);
-	function findAdvanced(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
+	function findAll(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
 
 	function create($entity);
 	function update($entity);
