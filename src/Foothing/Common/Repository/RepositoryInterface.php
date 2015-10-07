@@ -13,11 +13,19 @@ interface RepositoryInterface {
 
 	function find($id);
 	function all();
-	function findAll(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
+	function paginate(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
 
 	function create($entity);
 	function update($entity);
 	function delete($entity);
+
+	//
+	//
+	//	Eager loading.
+	//
+	//
+
+	function with(array $relations);
 
 	//
 	//

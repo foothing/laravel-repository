@@ -6,20 +6,26 @@ use Foothing\Common\Request\AbstractRemoteQuery;
 
 abstract class AbstractEloquentRepository implements RepositoryInterface {
 	protected $model;
+	protected $eagerLoad = [];
 
 	function __construct(\Illuminate\Database\Eloquent\Model $model) {
 		$this->model = $model;
 	}
 
+	protected function finalize($result) {
+		$this->eagerLoad = [];
+		return $result;
+	}
+
 	function find($id) {
-		return $this->model->find($id);
+		return $this->finalize( $this->model->with( $this->eagerLoad )->find($id) );
 	}
 
 	function all() {
-		return $this->model->all();
+		return $this->finalize( $this->model->with( $this->eagerLoad )->get() );
 	}
 
-	function findAll(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
+	function paginate(AbstractRemoteQuery $params = null, $limit = null, $offset = null) {
 		// Check if we have input parameters.
 		if ($params) {
 			$queryBuilder = $this->model;
@@ -39,28 +45,47 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 				}
 			}
 
-			return $queryBuilder->paginate($limit);
+			return $this->finalize( $queryBuilder->with( $this->eagerLoad )->paginate($limit) );
 		}
 
 		else {
-			return $this->findAll($limit, $offset);
+			return $this->finalize( $this->model->with( $this->eagerLoad )->paginate($limit) );
 		}
 	}
 
 	function create($entity) {
 		if ($entity->save()) {
-			return $entity;
+			if ( $this->eagerLoad ) {
+				$entity->load( $this->eagerLoad );
+			}
+			return $this->finalize( $entity );
 		} else {
 			throw new \Exception("Cannot create this entity");
 		}
 	}
 
 	function update($entity) {
-		return $this->create($entity);
+		if ( ! $entity->exists ) {
+			throw new \Exception("Cannot update entity that doesn't exists");
+		}
+
+		if ($entity->save()) {
+			if ( $this->eagerLoad ) {
+				$entity->load( $this->eagerLoad );
+			}
+			return $this->finalize( $entity );
+		} else {
+			throw new \Exception("Cannot create this entity");
+		}
 	}
 
 	function delete($entity) {
 		return $entity->delete();
+	}
+
+	function with(array $relations) {
+		$this->eagerLoad = $relations;
+		return $this;
 	}
 
 	function refresh() {
