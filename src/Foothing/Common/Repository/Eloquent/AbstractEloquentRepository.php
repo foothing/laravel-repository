@@ -68,6 +68,22 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 		return $this->finalize( $this->model->with( $this->eagerLoad )->find($id) );
 	}
 
+	function findOneBy($field, $arg1, $arg2 = null) {
+		$criteria = new EloquentCriteria();
+		$criteria->filter($field, $arg1, $arg2);
+		$queryBuilder = $criteria->applyFilters($this->model);
+		$this->applyAutoEagerLoading('unit');
+		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->first() );
+	}
+
+	function findAllBy($field, $arg1, $arg2 = null) {
+		$criteria = new EloquentCriteria();
+		$criteria->filter($field, $arg1, $arg2);
+		$queryBuilder = $criteria->applyFilters($this->model);
+		$this->applyAutoEagerLoading('list');
+		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->get() );
+	}
+
 	function all() {
 		$this->applyAutoEagerLoading('list');
 		return $this->finalize( $this->model->with( $this->eagerLoad )->get() );

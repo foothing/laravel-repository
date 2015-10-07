@@ -24,7 +24,7 @@ class EloquentCriteria implements CriteriaInterface {
 		return $this;
 	}
 
-	public function filter($field, $value, $operator = '=') {
+	public function filter($field, $value, $operator = null) {
 		if ( ! $operator ) {
 			$operator = '=';
 		}

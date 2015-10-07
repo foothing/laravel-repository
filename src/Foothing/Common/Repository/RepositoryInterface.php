@@ -12,6 +12,8 @@ interface RepositoryInterface {
 	//
 
 	function find($id);
+	function findOneBy($field, $arg1, $arg2 = null);
+	function findAllBy($field, $arg1, $arg2 = null);
 	function all();
 	function paginate(CriteriaInterface $params = null, $limit = null, $offset = null);
 

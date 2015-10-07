@@ -185,6 +185,18 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		$this->assertEquals(1, count($simpsons[0]->roles));
 		$this->assertEquals(3, count($simpsons[0]->children));
 	}
+
+	function testFindOneBy() {
+		$homer = $this->repository->findOneBy('name', 'Homer');
+		$this->assertEquals('Homer', $homer->name);
+	}
+
+	function testFindAllBy() {
+		$people = $this->repository->findAllBy('id', 1, '>');
+		$this->assertEquals(2, $people->count());
+		$this->assertEquals('Marge', $people[0]->name);
+		$this->assertEquals('Apu', $people[1]->name);
+	}
 }
 
 class Repository extends \Foothing\Common\Repository\Eloquent\AbstractEloquentRepository {
