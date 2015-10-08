@@ -12,16 +12,22 @@ interface RepositoryInterface {
 	//
 
 	function find($id);
+	function findOneBy($field, $arg1, $arg2 = null);
+	function findAllBy($field, $arg1, $arg2 = null);
 	function all();
-	function findAll($limit = null, $offset = null);
-
-	function findBy($attribute, $value, $operator = '=');
-	function findOneBy($attribute, $value, $operator = '=');
-	function findAdvanced(AbstractRemoteQuery $params = null, $limit = null, $offset = null);
+	function paginate(CriteriaInterface $params = null, $limit = null, $offset = null);
 
 	function create($entity);
 	function update($entity);
 	function delete($entity);
+
+	//
+	//
+	//	Eager loading.
+	//
+	//
+
+	function with(array $relations);
 
 	//
 	//
