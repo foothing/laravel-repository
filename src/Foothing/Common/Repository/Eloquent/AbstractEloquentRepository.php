@@ -9,6 +9,8 @@ use Foothing\Common\Resources\ResourceInterface;
 abstract class AbstractEloquentRepository implements RepositoryInterface {
 	protected $model;
 
+	protected $refreshFlag;
+
 	/**
 	 * @var array
 	 * Array of relations we want to eager load.
