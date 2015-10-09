@@ -19,4 +19,8 @@ class Person extends \Illuminate\Database\Eloquent\Model implements \Foothing\Co
 	function listRelations() {
 		return ['roles'];
 	}
+
+	function skipOnSave() {
+		return ['roles', 'children'];
+	}
 }

@@ -197,6 +197,14 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		$this->assertEquals('Marge', $people[0]->name);
 		$this->assertEquals('Apu', $people[1]->name);
 	}
+
+	function testUpdateSkipsRelations() {
+		$homer = $this->repository->findOneBy('name', 'Homer');
+		$homer->children = (object)['pid' => 1, 'name' => 'Bart'];
+		$homer->name = 'Foo';
+		// Expect no exceptions.
+		$this->repository->update($homer);
+	}
 }
 
 class Repository extends \Foothing\Common\Repository\Eloquent\AbstractEloquentRepository {
