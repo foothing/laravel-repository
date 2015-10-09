@@ -131,6 +131,16 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 
 		$this->applyAutoEagerLoading('unit');
 
+		// Since input may come from a JSON request, we
+		// can happen to find relations populated with
+		// stdClass object, which would break Eloquent
+		// save. Make sure they are unset before update.
+		if ($entity instanceof ResourceInterface) {
+			foreach ($entity->skipOnSave() as $relation) {
+				unset($entity->{$relation});
+			}
+		}
+
 		if ($entity->save()) {
 			if ( $this->eagerLoad ) {
 				$entity->load( $this->eagerLoad );
