@@ -1,6 +1,6 @@
 {
 	"name": "foothing/common",
-	"description": "Common utilities.",
+	"description": "This package includes a set of common PHP and Laravel tools.",
 	"authors": [
 		{
 			"name": "brazorf",
