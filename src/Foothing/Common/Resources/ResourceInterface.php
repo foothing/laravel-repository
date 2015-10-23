@@ -29,4 +29,6 @@ interface ResourceInterface {
 	 * @return array
 	 */
 	function skipOnSave();
+
+	// @TODO: validation.
 }
