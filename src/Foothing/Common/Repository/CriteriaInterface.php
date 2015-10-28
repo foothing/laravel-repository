@@ -10,6 +10,10 @@ interface CriteriaInterface {
 
 	function resetFilters();
 
+	function resetOrder();
+
+	function reset();
+
 	function order($field, $sort = 'asc');
 
 	function sort($direction);

@@ -51,6 +51,16 @@ class EloquentCriteria implements CriteriaInterface {
 		return $this;
 	}
 
+	public function resetOrder() {
+		$this->orderBy = null;
+		$this->sortDirection = 'asc';
+		return $this;
+	}
+
+	public function reset() {
+		return $this->resetFilters()->resetOrder();
+	}
+
 	public function order($field, $sort = 'asc') {
 		$this->orderBy = $field;
 		$this->sort($sort);

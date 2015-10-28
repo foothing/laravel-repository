@@ -26,8 +26,14 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 	 */
 	protected $enableAutoEagerLoading = false;
 
+	/**
+	 * @var EloquentCriteria
+	 */
+	protected $criteria;
+
 	function __construct(\Illuminate\Database\Eloquent\Model $model) {
 		$this->model = $model;
+		$this->criteria = new EloquentCriteria();
 		if ( $this->model instanceof ResourceInterface ) {
 			$this->enableAutoEagerLoading = true;
 		}
@@ -43,6 +49,7 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 	 */
 	protected function finalize($result) {
 		$this->eagerLoad = [];
+		$this->criteria->reset();
 		return $result;
 	}
 
@@ -71,45 +78,28 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 	}
 
 	function findOneBy($field, $arg1, $arg2 = null) {
-		$criteria = new EloquentCriteria();
-		$criteria->filter($field, $arg1, $arg2);
-		$queryBuilder = $criteria->applyFilters($this->model);
+		$this->criteria->filter($field, $arg1, $arg2);
+		$queryBuilder = $this->criteria->applyFilters($this->model);
 		$this->applyAutoEagerLoading('unit');
 		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->first() );
 	}
 
 	function findAllBy($field, $arg1, $arg2 = null) {
-		$criteria = new EloquentCriteria();
-		$criteria->filter($field, $arg1, $arg2);
-		$queryBuilder = $criteria->applyFilters($this->model);
+		return $this->filter($field, $arg1, $arg2)->all();
+	}
+
+	function all() {
+		$queryBuilder = $this->criteria->applyFilters($this->model);
+		$queryBuilder = $this->criteria->applyOrderBy($queryBuilder);
 		$this->applyAutoEagerLoading('list');
 		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->get() );
 	}
 
-	function all() {
+	function paginate($limit = null, $offset = null) {
+		$queryBuilder = $this->criteria->applyOrderBy($this->model);
+		$queryBuilder = $this->criteria->applyFilters($queryBuilder);
 		$this->applyAutoEagerLoading('list');
-		return $this->finalize( $this->model->with( $this->eagerLoad )->get() );
-	}
-
-	function paginate(CriteriaInterface $criteria = null, $limit = null, $offset = null) {
-		$this->applyAutoEagerLoading('list');
-
-		// Check if we have input parameters.
-		if ($criteria) {
-			$queryBuilder = $this->model;
-
-			// Apply sorting criteria.
-			$queryBuilder = $criteria->applyOrderBy($queryBuilder);
-
-			// Apply filters.
-			$queryBuilder = $criteria->applyFilters($queryBuilder);
-
-			return $this->finalize( $queryBuilder->with( $this->eagerLoad )->paginate($limit) );
-		}
-
-		else {
-			return $this->finalize( $this->model->with( $this->eagerLoad )->paginate($limit) );
-		}
+		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->paginate($limit) );
 	}
 
 	function create($entity) {
@@ -158,6 +148,21 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 
 	function with(array $relations) {
 		$this->eagerLoad = $relations;
+		return $this;
+	}
+
+	function filter($field, $value, $operator = '=') {
+		$this->criteria->filter($field, $value, $operator);
+		return $this;
+	}
+
+	function order($field) {
+		$this->criteria->order($field);
+		return $this;
+	}
+
+	function sort($direction) {
+		$this->criteria->sort($direction);
 		return $this;
 	}
 
