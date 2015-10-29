@@ -8,6 +8,7 @@
 		}
 	],
 	"keywords": ["laravel", "eloquent", "repository"],
+	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",
 		"illuminate/database": "~5.0",
