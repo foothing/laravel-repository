@@ -1,4 +1,4 @@
-<?php namespace Foothing\Common\Request;
+<?php namespace Foothing\Request;
 
 abstract class AbstractRemoteQuery {
 	public $sortField;

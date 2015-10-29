@@ -1,11 +1,14 @@
 <?php
 
-class AbstractEloquentRepositoryTest extends BaseTestCase {
+class EloquentRepositoryTest extends BaseTestCase {
+	/**
+	 * @var Repository
+	 */
 	protected $repository;
 
 	function setUp() {
 		parent::setUp();
-		$this->repository = new Repository( new Person() );
+		$this->repository = new \Foothing\Repository\Eloquent\EloquentRepository( new Person() );
 	}
 
 	function testFind() {
@@ -94,33 +97,26 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		$this->assertEquals('Maggie', $person->children[2]->name);
 	}
 
-	function testPaginateCriteria() {
-		$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
-		$criteria->filter('name', 'Homer');
-		$people = $this->repository->paginate($criteria);
+	function test_paginate_with_criteria() {
+		$people = $this->repository->filter('name', 'Homer')->paginate();
 		$this->assertEquals(1, $people->total());
 
-		$criteria->resetFilters()->filter('id', 1, '>');
-		$people = $this->repository->paginate($criteria);
+		$people = $this->repository->filter('id', 1, '>')->paginate();
 		$this->assertEquals(2, $people->total());
 
-		$criteria->resetFilters()->filter('id', 1, '>=');
-		$people = $this->repository->paginate($criteria);
+		$people = $this->repository->filter('id', 1, '>=')->paginate();
 		$this->assertEquals(3, $people->total());
 
-		$criteria->resetFilters()->filter('id', 1, '!=');
-		$people = $this->repository->paginate($criteria);
+		$people = $this->repository->filter('id', 1, '!=')->paginate();
 		$this->assertEquals(2, $people->total());
 
-		$criteria->resetFilters()->order('name');
-		$people = $this->repository->paginate($criteria);
+		$people = $this->repository->order('name')->paginate();
 		$people = $people->items();
 		$this->assertEquals('Apu', $people[0]->name);
 		$this->assertEquals('Homer', $people[1]->name);
 		$this->assertEquals('Marge', $people[2]->name);
 
-		$criteria->resetFilters()->order('name', 'desc');
-		$people = $this->repository->paginate($criteria);
+		$people = $this->repository->order('name')->sort('desc')->paginate();
 		$people = $people->items();
 		$this->assertEquals('Apu', $people[2]->name);
 	}
@@ -205,8 +201,20 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		// Expect no exceptions.
 		$this->repository->update($homer);
 	}
-}
 
-class Repository extends \Foothing\Common\Repository\Eloquent\AbstractEloquentRepository {
+	function test_criteria_shortcut_on_all() {
+		$simpsons = $this->repository->filter('id', 1, '>')->order('name')->all();
+		$this->assertEquals(2, $simpsons->count());
+		$this->assertEquals('Apu', $simpsons[0]->name);
+		$this->assertEquals('Marge', $simpsons[1]->name);
+	}
 
+	function test_criteria_is_overriden() {
+		$this->repository = $this->repository->filter('id', 1, '>')->order('name');
+		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
+		$criteria->filter('id', 1);
+		$homer = $this->repository->criteria($criteria)->all();
+		$this->assertEquals(1, $homer->count());
+		$this->assertEquals('Homer', $homer[0]->name);
+	}
 }

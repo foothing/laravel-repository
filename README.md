@@ -1,5 +1,5 @@
-# Common tools
-This package includes a set of common PHP and Laravel tools i use in my projects:
+# Laravel repository
+This package includes a set of common PHP and Laravel tools:
 - Repository pattern with Laravel 5 implementation
 - Resources handler
 - A standardized http input reader
@@ -7,23 +7,67 @@ This package includes a set of common PHP and Laravel tools i use in my projects
 ## Composer installation
 ```
 "require": [
-	"foothing/common": "0.4.*"
+	"foothing/laravel-repository": "0.5.*"
 ]
 ```
 
-## Repository
-This package ships with an abstract repository definition and
+## Basic usage
+This package ships with a repository interface definition and
 an `Eloquent` implementation.
-In order to use the `Eloquent` repository all you need to do
-is to implement your own class which will accept as first constructor
-argument the `Model` it will handle.
+The `EloquentRepository` is ready to use.
 
 ```php
 // Make a repository instance manually
-$repository = new PostsRepository(new Post());
+$repository = new EloquentRepository(new Post());
 ```
 
-You can add additional dependencies overriding the base constructor
+You are now ready to go:
+```php
+// Find first occurrence with matching field 'email'
+$repository->findOneBy('email', 'test@example.com');
+
+// Find first occurrence where id > 1
+$repository->findOneBy('id', '1', '>');
+
+// Find where title starts with 'foo'
+$repository->findAllBy('title', 'foo%', 'like');
+
+// Find all occurrences where id > 1
+$repository->findAllBy('id', '1', '>');
+
+// Returns all posts
+$repository->all();
+
+// Returns all post with Laravel pagination format
+$repository->paginate();
+
+// Create, update and delete instances.
+$model = new Post(Input::all());
+$freshMoel = $repository->create($model);
+$updatedModel = $repository->update($model);
+$repository->delete($model);
+```
+
+If you want to extend the base implementation with
+your custom methods all you need to do is extend the
+base class and define a constructor with the `Eloquent`
+model as the first argument.
+```php
+class PostsRepository extends EloquentRepository {
+	function __construct(Post $post) {
+		// Call superclass constructor.
+		parent::construct($post);
+	}
+
+	function customFancyMethod() {
+
+	}
+}
+```
+
+Don't forget to call the superclass constructor in order to
+enable all the features that are delivered out of the box.
+You can also add additional dependencies while overriding the base constructor.
 
 ```php
 class PostsRepository extends AbstractEloquentRepository {
@@ -53,29 +97,6 @@ class PostsController {
 		return $this->posts->find($id);
 	}
 }
-```
-
-Other examples:
-```php
-// Find first occurrence with matching field 'email'
-$this->posts->findOneBy('email', 'test@example.com');
-
-// Find first occurrence where id > 1
-$this->posts->findOneBy('id', '1', '>');
-
-// Find all occurrences where id > 1
-$this->posts->findAllBy('id', '1', '>');
-
-// Returns all posts
-$this->posts->all();
-
-// Returns all post with Laravel pagination format
-$this->posts->paginate();
-
-$model = new Post(Input::all());
-$this->posts->create($model);
-$this->posts->update($model);
-$this->posts->delete($model);
 ```
 
 ### Eager load relations
@@ -111,14 +132,14 @@ some relations by default. Let's assume you have an User model with
 a many-to-many relation with its Role models, and you want to fetch both
 the user info and the roles.
 
-The `Foothing\Common\Resources\Resource` interface has three methods
+The `Foothing\Resources\Resource` interface has three methods
 which define the default Model behaviour:
 - which relations to eager load by default for a *findOne* operation
 - which relations to eager load by default for a *findMany* operation
 - which fields to skip upon save
 
 ```php
-class User extends Model implements Foothing\Common\Resources\Resource {
+class User extends Model implements Foothing\Resources\Resource {
 	/**
 	 * Array of relations we want to eager-load when
 	 * a single entity is being fetched.
@@ -159,12 +180,14 @@ class User extends Model implements Foothing\Common\Resources\Resource {
 In this way, each time you will use your UserRepository the following
 would be the default behaviour:
 
-- $users->find($id) will eager load *roles* and *posts*
-- $users->findOneBy($id) will eager load *roles* and *posts*
-- $users->create() will eager load *roles* and *posts*
-- $users->update() will eager load *roles* and *posts*
-- $users->all() will eager load *roles*
-- $users->paginate() will eager load *roles*
+```php
+$users->find($id); 		// will eager load *roles* and *posts*
+$users->findOneBy($id); // will eager load *roles* and *posts*
+$users->create();		// will eager load *roles* and *posts*
+$users->update();		// will eager load *roles* and *posts*
+$users->all(); 			// will eager load *roles*
+$users->paginate(); 	// will eager load *roles*
+```
 
 This default behaviour will be ignored if you use the `with` method explicitly.
 
@@ -180,23 +203,43 @@ which also ships with an `Eloquent` implementation.
 
 Usage:
 ```php
-$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 $criteria->filter('name', 'Homer');
 $criteria->filter('lastName', 'Simpson');
 
 // Chain methods
 $criteria->order('name')->sort('asc');
-$repository->paginate($criteria);
+$repository->criteria($criteria)->paginate();
 ```
+
+The repository provides shortcut methods you can use in your chains.
+The following example produces the same effect as the previous one.
+```php
+$repository
+	->filter('name', 'Homer')
+	->filter('lastName', 'Simpson')
+	->order('name')
+	->sort('asc')
+	->paginate();
+```
+
+Methods subject to criteria restrictions are all those fetching more than one
+record.
 
 ## Repository API
 
 ```php
+//
+//
+//	Crud.
+//
+//
+
 function find($id);
 function findOneBy($field, $arg1, $arg2 = null);
 function findAllBy($field, $arg1, $arg2 = null);
 function all();
-function paginate(CriteriaInterface $params = null, $limit = null, $offset = null);
+function paginate($limit = null, $offset = null);
 
 function create($entity);
 function update($entity);
@@ -209,6 +252,20 @@ function delete($entity);
 //
 
 function with(array $relations);
+
+//
+//
+//	Criteria shortcuts.
+//
+//
+
+function criteria(CriteriaInterface $criteria);
+
+function filter($field, $value, $operator = '=');
+
+function order($field);
+
+function sort($direction);
 
 //
 //
@@ -228,14 +285,8 @@ function refresh();
  */
 function reset();
 
-//
-//
-//	Validation.
-//	@TODO: requires more work
-//
-//
-
 function validationRules();
+
 function validationRulesPartial($partial);
 ```
 

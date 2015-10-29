@@ -1,7 +1,7 @@
 <?php
-namespace Foothing\Common\Repository;
+namespace Foothing\Repository;
 
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Request\AbstractRemoteQuery;
 
 interface RepositoryInterface {
 
@@ -15,7 +15,7 @@ interface RepositoryInterface {
 	function findOneBy($field, $arg1, $arg2 = null);
 	function findAllBy($field, $arg1, $arg2 = null);
 	function all();
-	function paginate(CriteriaInterface $params = null, $limit = null, $offset = null);
+	function paginate($limit = null, $offset = null);
 
 	function create($entity);
 	function update($entity);
@@ -28,6 +28,20 @@ interface RepositoryInterface {
 	//
 
 	function with(array $relations);
+
+	//
+	//
+	//	Criteria shortcuts.
+	//
+	//
+
+	function criteria(CriteriaInterface $criteria);
+
+	function filter($field, $value, $operator = '=');
+
+	function order($field);
+
+	function sort($direction);
 
 	//
 	//

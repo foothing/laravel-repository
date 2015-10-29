@@ -1,8 +1,8 @@
-<?php namespace Foothing\Common\Repository\Eloquent;
+<?php namespace Foothing\Repository\Eloquent;
 
-use Foothing\Common\Repository\CriteriaFilter;
-use Foothing\Common\Repository\CriteriaInterface;
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Repository\CriteriaFilter;
+use Foothing\Repository\CriteriaInterface;
+use Foothing\Request\AbstractRemoteQuery;
 
 class EloquentCriteria implements CriteriaInterface {
 	public $orderBy;
@@ -49,6 +49,16 @@ class EloquentCriteria implements CriteriaInterface {
 	public function resetFilters() {
 		$this->filters = [];
 		return $this;
+	}
+
+	public function resetOrder() {
+		$this->orderBy = null;
+		$this->sortDirection = 'asc';
+		return $this;
+	}
+
+	public function reset() {
+		return $this->resetFilters()->resetOrder();
 	}
 
 	public function order($field, $sort = 'asc') {

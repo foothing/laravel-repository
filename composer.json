@@ -1,12 +1,14 @@
 {
-	"name": "foothing/common",
-	"description": "This package includes a set of common PHP and Laravel tools.",
+	"name": "foothing/laravel-repository",
+	"description": "This package provides an implementation of the repository pattern for Laravel 5.",
 	"authors": [
 		{
 			"name": "brazorf",
 			"email": "fabrizio.ranieri@gmail.com"
 		}
 	],
+	"keywords": ["laravel", "eloquent", "repository"],
+	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",
 		"illuminate/database": "~5.0",

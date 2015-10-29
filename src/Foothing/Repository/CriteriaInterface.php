@@ -1,6 +1,6 @@
-<?php namespace Foothing\Common\Repository;
+<?php namespace Foothing\Repository;
 
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Request\AbstractRemoteQuery;
 
 interface CriteriaInterface {
 
@@ -9,6 +9,10 @@ interface CriteriaInterface {
 	function filter($field, $value, $operator = '=');
 
 	function resetFilters();
+
+	function resetOrder();
+
+	function reset();
 
 	function order($field, $sort = 'asc');
 

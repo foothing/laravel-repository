@@ -1,4 +1,4 @@
-<?php namespace Foothing\Common\Repository;
+<?php namespace Foothing\Repository;
 
 class CriteriaFilter {
 	public $field;
