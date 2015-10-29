@@ -1,5 +1,5 @@
-# Common tools
-This package includes a set of common PHP and Laravel tools i use in my projects:
+# Laravel repository
+This package includes a set of common PHP and Laravel tools:
 - Repository pattern with Laravel 5 implementation
 - Resources handler
 - A standardized http input reader
@@ -7,7 +7,7 @@ This package includes a set of common PHP and Laravel tools i use in my projects
 ## Composer installation
 ```
 "require": [
-	"foothing/common": "0.4.*"
+	"foothing/laravel-repository": "0.5.*"
 ]
 ```
 
@@ -132,14 +132,14 @@ some relations by default. Let's assume you have an User model with
 a many-to-many relation with its Role models, and you want to fetch both
 the user info and the roles.
 
-The `Foothing\Common\Resources\Resource` interface has three methods
+The `Foothing\Resources\Resource` interface has three methods
 which define the default Model behaviour:
 - which relations to eager load by default for a *findOne* operation
 - which relations to eager load by default for a *findMany* operation
 - which fields to skip upon save
 
 ```php
-class User extends Model implements Foothing\Common\Resources\Resource {
+class User extends Model implements Foothing\Resources\Resource {
 	/**
 	 * Array of relations we want to eager-load when
 	 * a single entity is being fetched.
@@ -180,12 +180,14 @@ class User extends Model implements Foothing\Common\Resources\Resource {
 In this way, each time you will use your UserRepository the following
 would be the default behaviour:
 
-- $users->find($id) will eager load *roles* and *posts*
-- $users->findOneBy($id) will eager load *roles* and *posts*
-- $users->create() will eager load *roles* and *posts*
-- $users->update() will eager load *roles* and *posts*
-- $users->all() will eager load *roles*
-- $users->paginate() will eager load *roles*
+```php
+$users->find($id); 		// will eager load *roles* and *posts*
+$users->findOneBy($id); // will eager load *roles* and *posts*
+$users->create();		// will eager load *roles* and *posts*
+$users->update();		// will eager load *roles* and *posts*
+$users->all(); 			// will eager load *roles*
+$users->paginate(); 	// will eager load *roles*
+```
 
 This default behaviour will be ignored if you use the `with` method explicitly.
 
@@ -201,7 +203,7 @@ which also ships with an `Eloquent` implementation.
 
 Usage:
 ```php
-$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 $criteria->filter('name', 'Homer');
 $criteria->filter('lastName', 'Simpson');
 

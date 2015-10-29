@@ -1,6 +1,6 @@
-<?php namespace Foothing\Common\Request\Laravel;
+<?php namespace Foothing\Request\Laravel;
 
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Request\AbstractRemoteQuery;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 

@@ -1,4 +1,4 @@
-<?php namespace Foothing\Common\Resources;
+<?php namespace Foothing\Resources;
 
 interface ResourceInterface {
 	/**

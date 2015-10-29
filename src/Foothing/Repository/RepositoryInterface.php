@@ -1,7 +1,7 @@
 <?php
-namespace Foothing\Common\Repository;
+namespace Foothing\Repository;
 
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Request\AbstractRemoteQuery;
 
 interface RepositoryInterface {
 

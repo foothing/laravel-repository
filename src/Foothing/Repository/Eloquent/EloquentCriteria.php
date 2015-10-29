@@ -1,8 +1,8 @@
-<?php namespace Foothing\Common\Repository\Eloquent;
+<?php namespace Foothing\Repository\Eloquent;
 
-use Foothing\Common\Repository\CriteriaFilter;
-use Foothing\Common\Repository\CriteriaInterface;
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Repository\CriteriaFilter;
+use Foothing\Repository\CriteriaInterface;
+use Foothing\Request\AbstractRemoteQuery;
 
 class EloquentCriteria implements CriteriaInterface {
 	public $orderBy;

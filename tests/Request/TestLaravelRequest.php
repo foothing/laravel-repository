@@ -1,6 +1,6 @@
 <?php
 
-use Foothing\Common\Request\Laravel\RemoteQuery;
+use Foothing\Request\Laravel\RemoteQuery;
 
 class TestLaravelRequest extends PHPUnit_Framework_TestCase {
 

@@ -1,6 +1,6 @@
-<?php namespace Foothing\Common\Repository;
+<?php namespace Foothing\Repository;
 
-use Foothing\Common\Request\AbstractRemoteQuery;
+use Foothing\Request\AbstractRemoteQuery;
 
 interface CriteriaInterface {
 

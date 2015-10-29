@@ -3,7 +3,7 @@
 class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
 
 	function testFilter() {
-		$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->filter('name', 'Homer');
 		$criteria->filter('lastName', 'Simpson');
 		$this->assertEquals(2, count($criteria->filters));
@@ -30,7 +30,7 @@ class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function testOrder() {
-		$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->order('foo')->sort('asc');
 		$this->assertEquals('foo', $criteria->orderBy);
 		$this->assertEquals('asc', $criteria->sortDirection);
@@ -59,8 +59,8 @@ class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
 			]
 		];
 		$qparams = json_encode( (object)$qparams );
-		$query = \Foothing\Common\Request\Laravel\RemoteQuery::spawn($qparams);
-		$criteria = (new \Foothing\Common\Repository\Eloquent\EloquentCriteria())->make($query);
+		$query = \Foothing\Request\Laravel\RemoteQuery::spawn($qparams);
+		$criteria = (new \Foothing\Repository\Eloquent\EloquentCriteria())->make($query);
 		$this->assertEquals(2, count($criteria->filters));
 		$this->assertEquals('email', $criteria->filters[0]->field);
 		$this->assertEquals('test', $criteria->filters[0]->value);

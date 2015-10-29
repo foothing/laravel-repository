@@ -1,6 +1,6 @@
 <?php
 
-class Person extends \Illuminate\Database\Eloquent\Model implements \Foothing\Common\Resources\ResourceInterface {
+class Person extends \Illuminate\Database\Eloquent\Model implements \Foothing\Resources\ResourceInterface {
 	protected $table = 'person';
 	public $timestamps = false;
 

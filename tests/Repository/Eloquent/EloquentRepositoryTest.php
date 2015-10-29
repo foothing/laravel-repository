@@ -8,7 +8,7 @@ class EloquentRepositoryTest extends BaseTestCase {
 
 	function setUp() {
 		parent::setUp();
-		$this->repository = new \Foothing\Common\Repository\Eloquent\EloquentRepository( new Person() );
+		$this->repository = new \Foothing\Repository\Eloquent\EloquentRepository( new Person() );
 	}
 
 	function testFind() {
@@ -211,7 +211,7 @@ class EloquentRepositoryTest extends BaseTestCase {
 
 	function test_criteria_is_overriden() {
 		$this->repository = $this->repository->filter('id', 1, '>')->order('name');
-		$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->filter('id', 1);
 		$homer = $this->repository->criteria($criteria)->all();
 		$this->assertEquals(1, $homer->count());

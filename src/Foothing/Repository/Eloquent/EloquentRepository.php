@@ -1,10 +1,10 @@
 <?php
-namespace Foothing\Common\Repository\Eloquent;
+namespace Foothing\Repository\Eloquent;
 
-use Foothing\Common\Repository\Criteria;
-use Foothing\Common\Repository\CriteriaInterface;
-use Foothing\Common\Repository\RepositoryInterface;
-use Foothing\Common\Resources\ResourceInterface;
+use Foothing\Repository\Criteria;
+use Foothing\Repository\CriteriaInterface;
+use Foothing\Repository\RepositoryInterface;
+use Foothing\Resources\ResourceInterface;
 
 class EloquentRepository implements RepositoryInterface {
 	protected $model;
