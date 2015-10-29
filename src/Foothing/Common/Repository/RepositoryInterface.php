@@ -35,6 +35,8 @@ interface RepositoryInterface {
 	//
 	//
 
+	function criteria(CriteriaInterface $criteria);
+
 	function filter($field, $value, $operator = '=');
 
 	function order($field);

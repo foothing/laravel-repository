@@ -6,7 +6,7 @@ use Foothing\Common\Repository\CriteriaInterface;
 use Foothing\Common\Repository\RepositoryInterface;
 use Foothing\Common\Resources\ResourceInterface;
 
-abstract class AbstractEloquentRepository implements RepositoryInterface {
+class EloquentRepository implements RepositoryInterface {
 	protected $model;
 
 	protected $refreshFlag;
@@ -163,6 +163,11 @@ abstract class AbstractEloquentRepository implements RepositoryInterface {
 
 	function sort($direction) {
 		$this->criteria->sort($direction);
+		return $this;
+	}
+
+	function criteria(CriteriaInterface $criteria) {
+		$this->criteria = $criteria;
 		return $this;
 	}
 

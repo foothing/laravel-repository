@@ -1,6 +1,6 @@
 <?php
 
-class AbstractEloquentRepositoryTest extends BaseTestCase {
+class EloquentRepositoryTest extends BaseTestCase {
 	/**
 	 * @var Repository
 	 */
@@ -8,7 +8,7 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 
 	function setUp() {
 		parent::setUp();
-		$this->repository = new Repository( new Person() );
+		$this->repository = new \Foothing\Common\Repository\Eloquent\EloquentRepository( new Person() );
 	}
 
 	function testFind() {
@@ -208,8 +208,13 @@ class AbstractEloquentRepositoryTest extends BaseTestCase {
 		$this->assertEquals('Apu', $simpsons[0]->name);
 		$this->assertEquals('Marge', $simpsons[1]->name);
 	}
-}
 
-class Repository extends \Foothing\Common\Repository\Eloquent\AbstractEloquentRepository {
-
+	function test_criteria_is_overriden() {
+		$this->repository = $this->repository->filter('id', 1, '>')->order('name');
+		$criteria = new \Foothing\Common\Repository\Eloquent\EloquentCriteria();
+		$criteria->filter('id', 1);
+		$homer = $this->repository->criteria($criteria)->all();
+		$this->assertEquals(1, $homer->count());
+		$this->assertEquals('Homer', $homer[0]->name);
+	}
 }
