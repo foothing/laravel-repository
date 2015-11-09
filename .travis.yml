@@ -1,0 +1,24 @@
+language: php
+
+php:
+  - 5.5
+  - 5.4
+  - hhvm
+
+install:
+  - composer install --no-interaction --prefer-source
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e "create database IF NOT EXISTS lcommon;" -uroot
+  - mysql -e "CREATE USER 'lcommon'@'localhost' IDENTIFIED BY 'lcommon';" -uroot
+  - mysql -e "GRANT ALL PRIVILEGES ON lcommon.* TO 'lcommon'@'localhost';" -uroot
+  - mysql -e "FLUSH PRIVILEGES;" -uroot
+
+script:
+  - vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
+
+after_script:
+  - vendor/bin/test-reporter
