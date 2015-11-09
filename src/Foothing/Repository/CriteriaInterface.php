@@ -4,21 +4,21 @@ use Foothing\Request\AbstractRemoteQuery;
 
 interface CriteriaInterface {
 
-	function make(AbstractRemoteQuery $query);
+    public function make(AbstractRemoteQuery $query);
 
-	function filter($field, $value, $operator = '=');
+    public function filter($field, $value, $operator = '=');
 
-	function resetFilters();
+    public function resetFilters();
 
-	function resetOrder();
+    public function resetOrder();
 
-	function reset();
+    public function reset();
 
-	function order($field, $sort = 'asc');
+    public function order($field, $sort = 'asc');
 
-	function sort($direction);
+    public function sort($direction);
 
-	function applyOrderBy($queryBuilder);
+    public function applyOrderBy($queryBuilder);
 
-	function applyFilters($queryBuilder);
+    public function applyFilters($queryBuilder);
 }

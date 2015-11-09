@@ -1,8 +1,8 @@
 <?php
 
-class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
+class EloquentCriteriaTest extends \PHPUnit_Framework_TestCase {
 
-	function testFilter() {
+	public function testFilter() {
 		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->filter('name', 'Homer');
 		$criteria->filter('lastName', 'Simpson');
@@ -29,7 +29,7 @@ class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
 		$criteria->resetFilters()->filter('foo', 'bar', 'invalid');
 	}
 
-	function testOrder() {
+    public function testOrder() {
 		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->order('foo')->sort('asc');
 		$this->assertEquals('foo', $criteria->orderBy);
@@ -44,7 +44,7 @@ class EloquentCriteriaTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('asc', $criteria->sortDirection);
 	}
 
-	function testMake() {
+    public function testMake() {
 		\Mockery::mock('alias:Illuminate\Support\Facades\Log')->shouldReceive('debug');
 		$qparams = [
 			'filter' => (object)[
