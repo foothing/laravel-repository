@@ -102,7 +102,7 @@ class PostsController {
 ### Eager load relations
 You can eager load relations using the `with` method:
 ```php
-$posts = $repository->with(['author'], ['comments'])->all();
+$posts = $repository->with(['author', 'comments'])->all();
 
 Output:
 [
@@ -122,8 +122,8 @@ Output:
 ```
 You can chain the `with` method to all available methods:
 ```php
-$posts = $repository->with(['author'], ['comments'])->findOneBy('name', 'foo');
-$posts = $repository->with(['author'], ['comments'])->all();
+$posts = $repository->with(['author', 'comments'])->findOneBy('name', 'foo');
+$posts = $repository->with(['author', 'comments'])->all();
 // And so on.
 ```
 
@@ -235,15 +235,15 @@ record.
 //
 //
 
-function find($id);
-function findOneBy($field, $arg1, $arg2 = null);
-function findAllBy($field, $arg1, $arg2 = null);
-function all();
-function paginate($limit = null, $offset = null);
+public function find($id);
+public function findOneBy($field, $arg1, $arg2 = null);
+public function findAllBy($field, $arg1, $arg2 = null);
+public function all();
+public function paginate($limit = null, $offset = null);
 
-function create($entity);
-function update($entity);
-function delete($entity);
+public function create($entity);
+public function update($entity);
+public function delete($entity);
 
 //
 //
@@ -251,7 +251,7 @@ function delete($entity);
 //
 //
 
-function with(array $relations);
+public function with(array $relations);
 
 //
 //
@@ -259,13 +259,13 @@ function with(array $relations);
 //
 //
 
-function criteria(CriteriaInterface $criteria);
+public function criteria(CriteriaInterface $criteria);
 
-function filter($field, $value, $operator = '=');
+public function filter($field, $value, $operator = '=');
 
-function order($field);
+public function order($field, $sort = null);
 
-function sort($direction);
+public function sort($direction);
 
 //
 //
@@ -277,17 +277,18 @@ function sort($direction);
  * Forces the next read query to skip cached values.
  * @return self
  */
-function refresh();
+public function refresh();
 
 /**
  * Reset the refresh flag.
  * @return self
  */
-function reset();
+public function reset();
 
-function validationRules();
+public function validationRules();
 
-function validationRulesPartial($partial);
+public function validationRulesPartial($partial);
+
 ```
 
 ## RemoteQuery

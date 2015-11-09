@@ -202,14 +202,18 @@ class EloquentRepositoryTest extends BaseTestCase {
 		$this->repository->update($homer);
 	}
 
-	function test_criteria_shortcut_on_all() {
+	function testCriteriShortcutOnAll() {
 		$simpsons = $this->repository->filter('id', 1, '>')->order('name')->all();
 		$this->assertEquals(2, $simpsons->count());
 		$this->assertEquals('Apu', $simpsons[0]->name);
 		$this->assertEquals('Marge', $simpsons[1]->name);
+        $simpsons = $this->repository->filter('id', 1, '>')->order('name', 'desc')->all();
+        $this->assertEquals(2, $simpsons->count());
+        $this->assertEquals('Apu', $simpsons[1]->name);
+        $this->assertEquals('Marge', $simpsons[0]->name);
 	}
 
-	function test_criteria_is_overriden() {
+	function testCriteriaIsOverriden() {
 		$this->repository = $this->repository->filter('id', 1, '>')->order('name');
 		$criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
 		$criteria->filter('id', 1);

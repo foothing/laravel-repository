@@ -31,7 +31,7 @@ class EloquentRepository implements RepositoryInterface {
 	 */
 	protected $criteria;
 
-	function __construct(\Illuminate\Database\Eloquent\Model $model) {
+	public function __construct(\Illuminate\Database\Eloquent\Model $model) {
 		$this->model = $model;
 		$this->criteria = new EloquentCriteria();
 		if ( $this->model instanceof ResourceInterface ) {
@@ -72,37 +72,37 @@ class EloquentRepository implements RepositoryInterface {
 		}
 	}
 
-	function find($id) {
+	public function find($id) {
 		$this->applyAutoEagerLoading('unit');
 		return $this->finalize( $this->model->with( $this->eagerLoad )->find($id) );
 	}
 
-	function findOneBy($field, $arg1, $arg2 = null) {
+	public function findOneBy($field, $arg1, $arg2 = null) {
 		$this->criteria->filter($field, $arg1, $arg2);
 		$queryBuilder = $this->criteria->applyFilters($this->model);
 		$this->applyAutoEagerLoading('unit');
 		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->first() );
 	}
 
-	function findAllBy($field, $arg1, $arg2 = null) {
+	public function findAllBy($field, $arg1, $arg2 = null) {
 		return $this->filter($field, $arg1, $arg2)->all();
 	}
 
-	function all() {
+	public function all() {
 		$queryBuilder = $this->criteria->applyFilters($this->model);
 		$queryBuilder = $this->criteria->applyOrderBy($queryBuilder);
 		$this->applyAutoEagerLoading('list');
 		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->get() );
 	}
 
-	function paginate($limit = null, $offset = null) {
+	public function paginate($limit = null, $offset = null) {
 		$queryBuilder = $this->criteria->applyOrderBy($this->model);
 		$queryBuilder = $this->criteria->applyFilters($queryBuilder);
 		$this->applyAutoEagerLoading('list');
 		return $this->finalize( $queryBuilder->with( $this->eagerLoad )->paginate($limit) );
 	}
 
-	function create($entity) {
+	public function create($entity) {
 		$this->applyAutoEagerLoading('unit');
 
 		if ($entity->save()) {
@@ -115,7 +115,7 @@ class EloquentRepository implements RepositoryInterface {
 		}
 	}
 
-	function update($entity) {
+	public function update($entity) {
 		if ( ! $entity->exists ) {
 			throw new \Exception("Cannot update entity that doesn't exists");
 		}
@@ -142,48 +142,51 @@ class EloquentRepository implements RepositoryInterface {
 		}
 	}
 
-	function delete($entity) {
+	public function delete($entity) {
 		return $entity->delete();
 	}
 
-	function with(array $relations) {
+	public function with(array $relations) {
 		$this->eagerLoad = $relations;
 		return $this;
 	}
 
-	function filter($field, $value, $operator = '=') {
+	public function filter($field, $value, $operator = '=') {
 		$this->criteria->filter($field, $value, $operator);
 		return $this;
 	}
 
-	function order($field) {
+	public function order($field, $sort = null) {
 		$this->criteria->order($field);
+        if ($sort) {
+            $this->criteria->sort($sort);
+        }
 		return $this;
 	}
 
-	function sort($direction) {
+	public function sort($direction) {
 		$this->criteria->sort($direction);
 		return $this;
 	}
 
-	function criteria(CriteriaInterface $criteria) {
+	public function criteria(CriteriaInterface $criteria) {
 		$this->criteria = $criteria;
 		return $this;
 	}
 
-	function refresh() {
+	public function refresh() {
 		$this->refreshFlag = true;
 		return $this;
 	}
 
-	function reset() {
+	public function reset() {
 		$this->refreshFlag = false;
 		return $this;
 	}
 
-	function validationRules() { return []; }
+	public function validationRules() { return []; }
 
-	function validationRulesPartial($partial) {
+	public function validationRulesPartial($partial) {
 		$rules = $this->validationRules();
 		if ( empty($partial) ) {
 			return $rules;
