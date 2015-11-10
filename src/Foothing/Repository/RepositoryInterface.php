@@ -36,11 +36,8 @@ interface RepositoryInterface {
     //
 
     public function criteria(CriteriaInterface $criteria);
-
     public function filter($field, $value, $operator = '=');
-
     public function order($field, $sort = null);
-
     public function sort($direction);
 
     //
@@ -62,6 +59,5 @@ interface RepositoryInterface {
     public function reset();
 
     public function validationRules();
-
     public function validationRulesPartial($partial);
 }

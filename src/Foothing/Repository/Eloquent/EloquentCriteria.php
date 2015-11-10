@@ -2,6 +2,7 @@
 
 use Foothing\Repository\CriteriaFilter;
 use Foothing\Repository\CriteriaInterface;
+use Foothing\Repository\Operators\Factory;
 use Foothing\Request\AbstractRemoteQuery;
 
 class EloquentCriteria implements CriteriaInterface {
@@ -29,21 +30,12 @@ class EloquentCriteria implements CriteriaInterface {
             $operator = '=';
         }
 
-        if (! $this->validateOperator($operator)) {
-            throw new \Exception("Unallowed operator: $operator");
-        }
-
-        $filter = new CriteriaFilter();
-        $filter->field = $field;
-        $filter->value = $value;
-        // @TODO 'like' handler
-        $filter->operator = $operator;
-        $this->filters[] = $filter;
-        return $this;
+        return $this->setFilter(new CriteriaFilter($field, $value, $operator));
     }
 
-    protected function validateOperator($operator) {
-        return in_array($operator, $this->allowedOperators);
+    public function setFilter(CriteriaFilter $filter) {
+        $this->filters[] = $filter;
+        return $this;
     }
 
     public function resetFilters() {
@@ -84,7 +76,7 @@ class EloquentCriteria implements CriteriaInterface {
 
     public function applyFilters($queryBuilder) {
         foreach ($this->filters as $filter) {
-            $queryBuilder = $queryBuilder->where($filter->field, $filter->operator, $filter->value);
+            $queryBuilder = $filter->apply($queryBuilder);
         }
         return $queryBuilder;
     }

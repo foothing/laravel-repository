@@ -113,6 +113,12 @@ class EloquentRepositoryTest extends BaseTestCase {
         $people = $this->repository->filter('id', 1, '!=')->paginate();
         $this->assertEquals(2, $people->total());
 
+        $people = $this->repository->filter('name', 'Homer,Marge', 'in')->paginate();
+        $this->assertEquals(2, $people->total());
+
+        $people = $this->repository->filter('name', ['Homer', 'Marge'], 'in')->paginate();
+        $this->assertEquals(2, $people->total());
+
         $people = $this->repository->order('name')->paginate();
         $people = $people->items();
         $this->assertEquals('Apu', $people[0]->name);
