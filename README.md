@@ -223,6 +223,28 @@ $repository
 	->paginate();
 ```
 
+Available filters:
+```php
+// Defaults to '='
+$criteria->filter('name', 'Homer');
+
+$criteria->filter('name', 'Home%', 'like');
+$criteria->filter('id', 1, '>');
+$criteria->filter('id', 1', '>=');
+$criteria->filter('id', 1, '<');
+$criteria->filter('id', 1, '<=');
+$criteria->filter('id', 1, '!=');
+$criteria->filter('lastName', 'Simpson,Nahasapeemapetilon', 'in');
+```
+
+You can use the **in** operator with a comma separated list of values
+or with an array of values.
+
+```php
+$criteria->filter('lastName', 'Simpson,Nahasapeemapetilon', 'in');
+$criteria->filter('lastName', ['Simpson', 'Nahasapeemapetilon'], 'in');
+```
+
 Methods subject to criteria restrictions are all those fetching more than one
 record.
 
@@ -260,11 +282,8 @@ public function with(array $relations);
 //
 
 public function criteria(CriteriaInterface $criteria);
-
 public function filter($field, $value, $operator = '=');
-
 public function order($field, $sort = null);
-
 public function sort($direction);
 
 //
@@ -286,9 +305,7 @@ public function refresh();
 public function reset();
 
 public function validationRules();
-
 public function validationRulesPartial($partial);
-
 ```
 
 ## RemoteQuery

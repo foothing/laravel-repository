@@ -184,7 +184,9 @@ class EloquentRepository implements RepositoryInterface {
         return $this;
     }
 
-    public function validationRules() { return []; }
+    public function validationRules() {
+        return [];
+    }
 
     public function validationRulesPartial($partial) {
         $rules = $this->validationRules();
