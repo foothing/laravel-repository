@@ -4,21 +4,77 @@ use Foothing\Request\AbstractRemoteQuery;
 
 interface CriteriaInterface {
 
-	function make(AbstractRemoteQuery $query);
+    public function make(AbstractRemoteQuery $query);
 
-	function filter($field, $value, $operator = '=');
+    /**
+     * Set a filter on the given field.
+     * Allowed operators: '=', 'like', '<', '<=', '>', '>=', '!=', 'in'
+     *
+     * @param        $field
+     * @param        $value
+     * @param string $operator
+     *
+     * @return mixed
+     */
+    public function filter($field, $value, $operator = '=');
 
-	function resetFilters();
+    /**
+     * Set the given CriteriaFilter.
+     *
+     * @param CriteriaFilter $filter
+     *
+     * @return mixed
+     */
+    public function setFilter(CriteriaFilter $filter);
 
-	function resetOrder();
+    /**
+     * Reset all filters.
+     * @return mixed
+     */
+    public function resetFilters();
 
-	function reset();
+    /**
+     * Reset order clause.
+     * @return mixed
+     */
+    public function resetOrder();
 
-	function order($field, $sort = 'asc');
+    /**
+     * Reset filters and order clause.
+     * @return mixed
+     */
+    public function reset();
 
-	function sort($direction);
+    /**
+     * Set fetch order by.
+     * @param        $field
+     * @param string $sort
+     *
+     * @return mixed
+     */
+    public function order($field, $sort = 'asc');
 
-	function applyOrderBy($queryBuilder);
+    /**
+     * Set order by direction.
+     * @param $direction
+     *
+     * @return mixed
+     */
+    public function sort($direction);
 
-	function applyFilters($queryBuilder);
+    /**
+     * Applies orderBy to the given query builder.
+     * @param $queryBuilder
+     *
+     * @return mixed
+     */
+    public function applyOrderBy($queryBuilder);
+
+    /**
+     * Applies filters to the given query builder.
+     * @param $queryBuilder
+     *
+     * @return mixed
+     */
+    public function applyFilters($queryBuilder);
 }
