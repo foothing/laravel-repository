@@ -27,7 +27,7 @@ class RemoteQuery extends AbstractRemoteQuery {
         if (property_exists($input, 'filter') && $input->filter && property_exists($input->filter, 'fields')) {
 
             foreach ($input->filter->fields as $field) {
-                if (property_exists($field, 'name') && property_exists($field, 'value') && $field->value) {
+                if (property_exists($field, 'name') && property_exists($field, 'value') && $field->value !== null) {
                     Log::debug("Remote query applying filter " . $field->name);
                     $query->filters[] = (object)[
                         'name' => $field->name,
