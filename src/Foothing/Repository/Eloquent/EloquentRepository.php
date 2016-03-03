@@ -105,6 +105,13 @@ class EloquentRepository implements RepositoryInterface {
     public function create($entity) {
         $this->applyAutoEagerLoading('unit');
 
+        // Skip relation fields.
+        if ($entity instanceof ResourceInterface) {
+            foreach ($entity->skipOnSave() as $relation) {
+                unset($entity->{$relation});
+            }
+        }
+
         if ($entity->save()) {
             if ($this->eagerLoad) {
                 $entity->load($this->eagerLoad);
