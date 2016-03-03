@@ -77,6 +77,34 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Maggie', $person->children[2]->name);
     }
 
+    public function testAllWithCriteria() {
+        $people = $this->repository->filter('name', 'Homer')->all();
+        $this->assertEquals(1, count($people));
+
+        $people = $this->repository->filter('id', 1, '>')->all();
+        $this->assertEquals(2, count($people));
+
+        $people = $this->repository->filter('id', 1, '>=')->all();
+        $this->assertEquals(3, count($people));
+
+        $people = $this->repository->filter('id', 1, '!=')->all();
+        $this->assertEquals(2, count($people));
+
+        $people = $this->repository->filter('name', 'Homer,Marge', 'in')->all();
+        $this->assertEquals(2, count($people));
+
+        $people = $this->repository->filter('name', ['Homer', 'Marge'], 'in')->all();
+        $this->assertEquals(2, count($people));
+
+        $people = $this->repository->order('name')->all();
+        $this->assertEquals('Apu', $people[0]->name);
+        $this->assertEquals('Homer', $people[1]->name);
+        $this->assertEquals('Marge', $people[2]->name);
+
+        $people = $this->repository->order('name')->sort('desc')->all();
+        $this->assertEquals('Apu', $people[2]->name);
+    }
+
     public function testPaginate() {
         $people = $this->repository->paginate();
         $this->assertEquals(3, $people->total());
