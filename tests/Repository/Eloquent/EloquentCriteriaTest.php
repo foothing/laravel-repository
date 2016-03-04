@@ -6,13 +6,16 @@ class EloquentCriteriaTest extends \PHPUnit_Framework_TestCase {
         $criteria = new \Foothing\Repository\Eloquent\EloquentCriteria();
         $criteria->filter('name', 'Homer');
         $criteria->filter('lastName', 'Simpson');
-        $this->assertEquals(2, count($criteria->filters));
+        $criteria->filter('nullable', null);
+        $this->assertEquals(3, count($criteria->filters));
         $this->assertEquals('name', $criteria->filters[0]->field);
         $this->assertEquals('Homer', $criteria->filters[0]->value);
         $this->assertEquals('=', $criteria->filters[0]->operator);
         $this->assertEquals('lastName', $criteria->filters[1]->field);
         $this->assertEquals('Simpson', $criteria->filters[1]->value);
         $this->assertEquals('=', $criteria->filters[1]->operator);
+        $this->assertEquals('nullable', $criteria->filters[2]->field);
+        $this->assertEquals(null, $criteria->filters[2]->value);
 
         $criteria->resetFilters()->filter('foo', 'bar', '<');
         $this->assertEquals('<', $criteria->filters[0]->operator);

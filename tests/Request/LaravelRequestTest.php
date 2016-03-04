@@ -50,7 +50,8 @@ class LaravelRequestTest extends \PHPUnit_Framework_TestCase {
             'fields' => [
                 (object)['name' => 'email', 'value' => 'test', 'operator' => '<='],
                 (object)['name' => 'country', 'value' => 'Italy', 'operator' => 'like'],
-                (object)['name' => 'amount', 'value' => 0, 'operator' => '>']
+                (object)['name' => 'amount', 'value' => 0, 'operator' => '>'],
+                (object)['name' => 'nullable', 'value' => 'null', 'operator' => '=']
             ]
         ]];
         $query = $this->spawn($qparams);
@@ -68,6 +69,9 @@ class LaravelRequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('amount', $query->filters[2]->name);
         $this->assertEquals(0, $query->filters[2]->value);
         $this->assertEquals('>', $query->filters[2]->operator);
+        $this->assertEquals('nullable', $query->filters[3]->name);
+        $this->assertEquals(null, $query->filters[3]->value);
+        $this->assertEquals('=', $query->filters[3]->operator);
     }
 
     protected function spawn($qparams) {
