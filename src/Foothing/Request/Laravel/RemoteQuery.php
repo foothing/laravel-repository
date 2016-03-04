@@ -31,7 +31,7 @@ class RemoteQuery extends AbstractRemoteQuery {
                     Log::debug("Remote query applying filter " . $field->name);
                     $query->filters[] = (object)[
                         'name' => $field->name,
-                        'value' => $field->value,
+                        'value' => self::parseValue($field->value),
                         'operator' => $field->operator
                     ];
                     $query->filterEnabled = true;
@@ -40,5 +40,12 @@ class RemoteQuery extends AbstractRemoteQuery {
         }
 
         return $query;
+    }
+
+    protected static function parseValue($raw) {
+        if ($raw == 'null') {
+            return null;
+        }
+        return $raw;
     }
 }
