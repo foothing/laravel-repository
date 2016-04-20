@@ -19,10 +19,10 @@ class LaravelRequestTest extends \PHPUnit_Framework_TestCase {
 
         // No exceptions for sort command without sort field.
         $qparams = ['sort'];
-        $query = $this->spawn($qparams);
+        $this->spawn($qparams);
 
         $qparams = [ 'sort' => null ];
-        $query = $this->spawn($qparams);
+        $this->spawn($qparams);
 
         // Check sort query (default asc).
         $qparams = [ 'sort' => (object)['field' => 'name'] ];
@@ -44,14 +44,15 @@ class LaravelRequestTest extends \PHPUnit_Framework_TestCase {
 
         // Check filters.
         $qparams = [ 'filter' => null ];
-        $query = $this->spawn($qparams);
+        $this->spawn($qparams);
 
         $qparams = [ 'filter' => (object)[
             'fields' => [
                 (object)['name' => 'email', 'value' => 'test', 'operator' => '<='],
                 (object)['name' => 'country', 'value' => 'Italy', 'operator' => 'like'],
                 (object)['name' => 'amount', 'value' => 0, 'operator' => '>'],
-                (object)['name' => 'nullable', 'value' => 'null', 'operator' => '=']
+                (object)['name' => 'nullable', 'value' => 'null', 'operator' => '='],
+                (object)['name' => 'wildcards', 'value' => '* foo bar*', 'operator' => 'like']
             ]
         ]];
         $query = $this->spawn($qparams);
@@ -72,6 +73,9 @@ class LaravelRequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('nullable', $query->filters[3]->name);
         $this->assertEquals(null, $query->filters[3]->value);
         $this->assertEquals('=', $query->filters[3]->operator);
+        $this->assertEquals('wildcards', $query->filters[4]->name);
+        $this->assertEquals("% foo bar%", $query->filters[4]->value);
+        $this->assertEquals('like', $query->filters[4]->operator);
     }
 
     protected function spawn($qparams) {
