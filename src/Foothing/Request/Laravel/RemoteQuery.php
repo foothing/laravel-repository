@@ -46,6 +46,6 @@ class RemoteQuery extends AbstractRemoteQuery {
         if ($raw == 'null') {
             return null;
         }
-        return $raw;
+        return preg_replace("/\*/", "%", $raw);
     }
 }
