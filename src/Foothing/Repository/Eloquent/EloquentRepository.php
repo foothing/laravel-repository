@@ -158,6 +158,10 @@ class EloquentRepository implements RepositoryInterface {
         return $this;
     }
 
+    public function attach($entity, $relation, $relatedEntity) {
+        $entity->{$relation}()->save($relatedEntity);
+    }
+
     public function filter($field, $value, $operator = '=') {
         $this->criteria->filter($field, $value, $operator);
         return $this;

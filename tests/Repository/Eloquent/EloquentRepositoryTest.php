@@ -258,4 +258,11 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals(1, $homer->count());
         $this->assertEquals('Homer', $homer[0]->name);
     }
+
+    public function testAttach() {
+        $bart = \Son::where('name', 'Bart')->first();
+        $homer = $this->repository->findOneBy('name', 'Homer');
+        //dd($homer);
+        $this->repository->attach($homer, 'children', $bart);
+    }
 }

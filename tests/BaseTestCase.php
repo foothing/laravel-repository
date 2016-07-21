@@ -44,6 +44,7 @@ class BaseTestCase extends \Orchestra\Testbench\TestCase {
         \DB::table('roles')->insert(['id' => 1, 'name' => 'Father']);
         \DB::table('roles')->insert(['id' => 2, 'name' => 'Mother']);
         \DB::table('roles')->insert(['id' => 3, 'name' => 'Vendor']);
+        \DB::table('roles')->insert(['id' => 4, 'name' => 'Children']);
 
         \DB::table('person_roles')->insert(['pid' => 1, 'rid' => 1]);
         \DB::table('person_roles')->insert(['pid' => 2, 'rid' => 2]);
