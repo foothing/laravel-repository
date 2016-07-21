@@ -3,6 +3,16 @@
 class DefaultOperator extends AbstractOperator {
 
     public function apply($query) {
-        return $query->where($this->filter->field, $this->filter->operator, $this->filter->value);
+        $field = $this->field;
+
+        if ($field instanceof NestedField) {
+            return $query->whereHas($field->relationName, function($subquery) use($field) {
+                $subquery->where($field->fieldName, $this->filter->operator, $this->filter->value);
+            });
+        }
+
+        else {
+            return $query->where($field, $this->filter->operator, $this->filter->value);
+        }
     }
 }

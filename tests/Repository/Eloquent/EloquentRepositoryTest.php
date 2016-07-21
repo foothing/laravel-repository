@@ -258,4 +258,11 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals(1, $homer->count());
         $this->assertEquals('Homer', $homer[0]->name);
     }
+
+    public function testAllWithNestedFilter() {
+        $people = $this->repository->filter('children.name', 'Bart')->all();
+        $this->assertEquals(2, count($people));
+        $this->assertEquals("Homer", $people[0]->name);
+        $this->assertEquals("Marge", $people[1]->name);
+    }
 }
