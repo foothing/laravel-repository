@@ -2,6 +2,7 @@
 
 use Foothing\Repository\Tests\BaseTestCase;
 use Foothing\Repository\Tests\Fixtures\Person;
+use Foothing\Repository\Tests\Fixtures\Role;
 
 class EloquentRepositoryTest extends BaseTestCase {
     /**
@@ -260,9 +261,43 @@ class EloquentRepositoryTest extends BaseTestCase {
     }
 
     public function testAttach() {
-        $bart = \Son::where('name', 'Bart')->first();
+        $foodCritic = Role::find(7);
         $homer = $this->repository->findOneBy('name', 'Homer');
-        //dd($homer);
-        $this->repository->attach($homer, 'children', $bart);
+
+        // Check preconditions.
+        $this->assertEquals(1, $homer->roles->count());
+
+        $homer = $this->repository->attach($homer, 'roles', $foodCritic);
+
+        // Refresh.
+        $homer->load('roles');
+
+        // Homer is now a father and a food critic.
+        $this->assertEquals(2, $homer->roles->count());
+        $this->assertEquals($foodCritic->id, $homer->roles[1]->id);
+    }
+
+    public function testAttach_fails_if_relation_is_not_many_to_many() {
+        $this->setExpectedException('Exception');
+        $this->repository->attach(Person::find(1), 'children', new \Son());
+    }
+
+    public function testDetach() {
+        $homer = $this->repository->findOneBy('name', 'Homer');
+        $father = Role::find(1);
+
+        $this->assertEquals(1, $homer->roles->count());
+
+        $homer = $this->repository->detach($homer, 'roles', $father);
+
+        // Refresh.
+        $homer->load('roles');
+
+        $this->assertEquals(0, $homer->roles->count());
+    }
+
+    public function testDetach_fails_if_relation_is_not_many_to_many() {
+        $this->setExpectedException('Exception');
+        $this->repository->detach(Person::find(1), 'children', new \Son());
     }
 }

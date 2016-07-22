@@ -159,7 +159,25 @@ class EloquentRepository implements RepositoryInterface {
     }
 
     public function attach($entity, $relation, $relatedEntity) {
-        $entity->{$relation}()->save($relatedEntity);
+        $modelRelation = $entity->{$relation}();
+
+        if (! $modelRelation instanceof \Illuminate\Database\Eloquent\Relations\BelongsToMany) {
+            throw new \Exception("Can't attach if relation is not many-to-many.");
+        }
+
+        $modelRelation->attach($relatedEntity->id);
+        return $this->finalize($entity);
+    }
+
+    public function detach($entity, $relation, $relatedEntity) {
+        $modelRelation = $entity->{$relation}();
+
+        if (! $modelRelation instanceof \Illuminate\Database\Eloquent\Relations\BelongsToMany) {
+            throw new \Exception("Can't detach if relation is not many-to-many.");
+        }
+
+        $modelRelation->detach($relatedEntity->id);
+        return $this->finalize($entity);
     }
 
     public function filter($field, $value, $operator = '=') {
