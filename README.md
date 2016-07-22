@@ -246,7 +246,7 @@ $criteria->filter('lastName', ['Simpson', 'Nahasapeemapetilon'], 'in');
 ```
 
 ### Nested filters
-It's also possible to query against a Model relation. Assume your
+It's also possible to query a Model relation. Assume your
 Eloquent Model defines a `children` relation like so:
 
 ```php
@@ -259,7 +259,7 @@ class Foo extends Model {
 }
 ```
 
-In this case you'll be allowed to query against `children` values:
+In this case you'll be allowed to query `children` values:
 ```php
 $criteria->filter('children.name', 'Bart');
 ```
