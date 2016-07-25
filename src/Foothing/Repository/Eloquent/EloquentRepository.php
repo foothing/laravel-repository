@@ -32,8 +32,16 @@ class EloquentRepository implements RepositoryInterface {
     protected $criteria;
 
     public function __construct(\Illuminate\Database\Eloquent\Model $model) {
-        $this->model = $model;
+        $this->setModel($model);
         $this->criteria = new EloquentCriteria();
+    }
+
+    /**
+     * Set the repository model.
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    public function setModel(\Illuminate\Database\Eloquent\Model $model) {
+        $this->model = $model;
         if ($this->model instanceof ResourceInterface) {
             $this->enableAutoEagerLoading = true;
         }
