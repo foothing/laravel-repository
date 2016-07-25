@@ -261,7 +261,7 @@ class Foo extends Model {
 
 In this case you'll be allowed to query `children` values:
 ```php
-$criteria->filter('children.name', 'Bart');
+$criteria->filter('children.name', 'Bar');
 ```
 
 > Keep in mind that the methods subject to criteria restrictions are all those fetching more than one
