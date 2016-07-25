@@ -1,7 +1,4 @@
-<?php
-namespace Foothing\Repository;
-
-use Foothing\Request\AbstractRemoteQuery;
+<?php namespace Foothing\Repository;
 
 interface RepositoryInterface {
 
@@ -28,6 +25,34 @@ interface RepositoryInterface {
     //
 
     public function with(array $relations);
+
+    //
+    //
+    //	Relations.
+    //
+    //
+
+    /**
+     * Attach $relatedEntity and $entity in a many-to-many relation.
+     *
+     * @param Model $entity
+     * @param string $relation
+     * @param Model $relatedEntity
+     *
+     * @return Model the updated $entity
+     */
+    public function attach($entity, $relation, $relatedEntity);
+
+    /**
+     * Detach $entity and $relatedEntity in a many-to-many relation.
+     *
+     * @param Model $entity
+     * @param string $relation
+     * @param Model $relatedEntity
+     *
+     * @return Model the updated $entity
+     */
+    public function detach($entity, $relation, $relatedEntity);
 
     //
     //
