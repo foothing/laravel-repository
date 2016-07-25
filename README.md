@@ -245,8 +245,27 @@ $criteria->filter('lastName', 'Simpson,Nahasapeemapetilon', 'in');
 $criteria->filter('lastName', ['Simpson', 'Nahasapeemapetilon'], 'in');
 ```
 
-Methods subject to criteria restrictions are all those fetching more than one
-record.
+### Nested filters
+It's also possible to query a Model relation. Assume your
+Eloquent Model defines a `children` relation like so:
+
+```php
+class Foo extends Model {
+	protected $table = 'foo';
+
+	public function children() {
+		return $this->hasMany('Bar');
+	}
+}
+```
+
+In this case you'll be allowed to query `children` values:
+```php
+$criteria->filter('children.name', 'Bart');
+```
+
+> Keep in mind that the methods subject to criteria restrictions are all those fetching more than one
+> record.
 
 ## Repository API
 
