@@ -248,64 +248,116 @@ $criteria->filter('lastName', ['Simpson', 'Nahasapeemapetilon'], 'in');
 Methods subject to criteria restrictions are all those fetching more than one
 record.
 
+## Attach and detach many-to-many
+Given the following `Model`:
+```php
+class Homer extends Model {
+
+	public function roles() {
+		return $this->hasMany('Role');
+	}
+
+}
+```
+
+you can use the `attach()` and `detach()` methods to attach and detach to / from relation.
+
+```php
+$homer = Homer::find(1);
+$foodCritic = Role::find(1);
+$repository->attach($homer, 'roles', $foodCritic);
+$repository->detach($homer, 'roles', $foodCritic);
+```
+
 ## Repository API
 
 ```php
-//
-//
-//	Crud.
-//
-//
+interface RepositoryInterface {
 
-public function find($id);
-public function findOneBy($field, $arg1, $arg2 = null);
-public function findAllBy($field, $arg1, $arg2 = null);
-public function all();
-public function paginate($limit = null, $offset = null);
+    //
+    //
+    //	Crud.
+    //
+    //
 
-public function create($entity);
-public function update($entity);
-public function delete($entity);
+    public function find($id);
+    public function findOneBy($field, $arg1, $arg2 = null);
+    public function findAllBy($field, $arg1, $arg2 = null);
+    public function all();
+    public function paginate($limit = null, $offset = null);
 
-//
-//
-//	Eager loading.
-//
-//
+    public function create($entity);
+    public function update($entity);
+    public function delete($entity);
 
-public function with(array $relations);
+    //
+    //
+    //	Eager loading.
+    //
+    //
 
-//
-//
-//	Criteria shortcuts.
-//
-//
+    public function with(array $relations);
 
-public function criteria(CriteriaInterface $criteria);
-public function filter($field, $value, $operator = '=');
-public function order($field, $sort = null);
-public function sort($direction);
+    //
+    //
+    //	Relations.
+    //
+    //
 
-//
-//
-//	Helpers.
-//
-//
+    /**
+     * Attach $relatedEntity and $entity in a many-to-many relation.
+     *
+     * @param Model $entity
+     * @param string $relation
+     * @param Model $relatedEntity
+     *
+     * @return Model the updated $entity
+     */
+    public function attach($entity, $relation, $relatedEntity);
 
-/**
- * Forces the next read query to skip cached values.
- * @return self
- */
-public function refresh();
+    /**
+     * Detach $entity and $relatedEntity in a many-to-many relation.
+     *
+     * @param Model $entity
+     * @param string $relation
+     * @param Model $relatedEntity
+     *
+     * @return Model the updated $entity
+     */
+    public function detach($entity, $relation, $relatedEntity);
 
-/**
- * Reset the refresh flag.
- * @return self
- */
-public function reset();
+    //
+    //
+    //	Criteria shortcuts.
+    //
+    //
 
-public function validationRules();
-public function validationRulesPartial($partial);
+    public function criteria(CriteriaInterface $criteria);
+    public function filter($field, $value, $operator = '=');
+    public function order($field, $sort = null);
+    public function sort($direction);
+
+    //
+    //
+    //	Helpers.
+    //
+    //
+
+    /**
+     * Forces the next read query to skip cached values.
+     * @return self
+     */
+    public function refresh();
+
+    /**
+     * Reset the refresh flag.
+     * @return self
+     */
+    public function reset();
+
+    public function validationRules();
+    public function validationRulesPartial($partial);
+}
 ```
 
 ## RemoteQuery
