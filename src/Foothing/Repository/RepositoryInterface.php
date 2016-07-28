@@ -67,6 +67,14 @@ interface RepositoryInterface {
 
     //
     //
+    //	Scopes.
+    //
+    //
+
+    public function scope($scope);
+
+    //
+    //
     //	Helpers.
     //
     //
