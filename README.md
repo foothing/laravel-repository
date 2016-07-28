@@ -288,6 +288,26 @@ $repository->attach($homer, 'roles', $foodCritic);
 $repository->detach($homer, 'roles', $foodCritic);
 ```
 
+## Scopes
+You can plug-in your Model scopes using the `scope()` method.
+```php
+// Model
+class Person extends Model {
+
+	public function scopeMale($query) {
+		return $query->where('sex', 'male');
+	}
+}
+
+// Usage in Repository
+$malePeople = $repository->scope('male')->all();
+$malePeople = $repository->scope('male')->filter('name', 'Bart')->all();
+$malePeople = $repository->scope('male')->paginate();
+$malePeople = $repository->scope('male')->findAllBy('name', 'John');
+```
+
+Scopes only apply on read methods.
+
 ## Repository API
 
 ```php
