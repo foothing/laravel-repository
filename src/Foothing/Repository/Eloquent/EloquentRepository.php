@@ -7,6 +7,11 @@ use Foothing\Repository\RepositoryInterface;
 use Foothing\Resources\ResourceInterface;
 
 class EloquentRepository implements RepositoryInterface {
+
+    /**
+     * The Eloquent Model.
+     * @var Model
+     */
     protected $model;
 
     protected $refreshFlag;
@@ -30,6 +35,11 @@ class EloquentRepository implements RepositoryInterface {
      * @var EloquentCriteria
      */
     protected $criteria;
+
+    /**
+     * @var string
+     */
+    protected $scope;
 
     public function __construct(\Illuminate\Database\Eloquent\Model $model) {
         $this->setModel($model);
@@ -58,6 +68,7 @@ class EloquentRepository implements RepositoryInterface {
     protected function finalize($result) {
         $this->eagerLoad = [];
         $this->criteria->reset();
+        $this->scope = null;
         return $result;
     }
 
@@ -82,12 +93,13 @@ class EloquentRepository implements RepositoryInterface {
 
     public function find($id) {
         $this->applyAutoEagerLoading('unit');
-        return $this->finalize($this->model->with($this->eagerLoad)->find($id));
+        return $this->finalize($this->applyScope()->with($this->eagerLoad)->find($id));
     }
 
     public function findOneBy($field, $arg1, $arg2 = null) {
         $this->criteria->filter($field, $arg1, $arg2);
-        $queryBuilder = $this->criteria->applyFilters($this->model);
+        $queryBuilder = $this->applyScope();
+        $queryBuilder = $this->criteria->applyFilters($queryBuilder);
         $this->applyAutoEagerLoading('unit');
         return $this->finalize($queryBuilder->with($this->eagerLoad)->first());
     }
@@ -97,14 +109,16 @@ class EloquentRepository implements RepositoryInterface {
     }
 
     public function all() {
-        $queryBuilder = $this->criteria->applyFilters($this->model);
+        $queryBuilder = $this->applyScope();
+        $queryBuilder = $this->criteria->applyFilters($queryBuilder);
         $queryBuilder = $this->criteria->applyOrderBy($queryBuilder);
         $this->applyAutoEagerLoading('list');
         return $this->finalize($queryBuilder->with($this->eagerLoad)->get());
     }
 
     public function paginate($limit = null, $offset = null) {
-        $queryBuilder = $this->criteria->applyOrderBy($this->model);
+        $queryBuilder = $this->applyScope();
+        $queryBuilder = $this->criteria->applyOrderBy($queryBuilder);
         $queryBuilder = $this->criteria->applyFilters($queryBuilder);
         $this->applyAutoEagerLoading('list');
         return $this->finalize($queryBuilder->with($this->eagerLoad)->paginate($limit));
@@ -209,6 +223,25 @@ class EloquentRepository implements RepositoryInterface {
     public function criteria(CriteriaInterface $criteria) {
         $this->criteria = $criteria;
         return $this;
+    }
+
+    public function scope($scope) {
+        $this->scope = $scope;
+        return $this;
+    }
+
+    protected function applyScope() {
+        if (! $this->scope) {
+            return $this->model;
+        }
+
+        $queryBuilder = $this->model->{$this->scope}();
+
+        if (! $queryBuilder instanceof \Illuminate\Database\Eloquent\Builder) {
+            throw new \Exception("Scope {$this->scope} is not valid.");
+        }
+
+        return $queryBuilder;
     }
 
     public function refresh() {

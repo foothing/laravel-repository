@@ -23,4 +23,8 @@ class Person extends \Illuminate\Database\Eloquent\Model implements \Foothing\Re
     public function skipOnSave() {
         return ['roles', 'children'];
     }
+
+    public function scopeMale($query) {
+        return $query->whereIn('id', [1, 3]);
+    }
 }
