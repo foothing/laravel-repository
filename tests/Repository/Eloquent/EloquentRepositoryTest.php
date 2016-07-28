@@ -27,6 +27,14 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Homer', $person->name);
     }
 
+    public function testFindUsingScope() {
+        $homer = $this->repository->scope('male')->find(1);
+        $this->assertEquals("Homer", $homer->name);
+
+        $marge = $this->repository->scope('male')->find(2);
+        $this->assertNull($marge);
+    }
+
     public function testFindWith() {
         $person = $this->repository->with([])->find(1);
         $this->assertNotNull($person);
@@ -59,6 +67,13 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Homer', $people[0]->name);
         $this->assertEquals('Marge', $people[1]->name);
         $this->assertEquals('Apu', $people[2]->name);
+    }
+
+    public function testAllUsingScope() {
+        $malePeople = $this->repository->scope('male')->all();
+        $this->assertEquals(2, $malePeople->count());
+        $this->assertEquals("Homer", $malePeople[0]->name);
+        $this->assertEquals("Apu", $malePeople[1]->name);
     }
 
     public function testAllWith() {
@@ -114,6 +129,14 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Homer', $people[0]->name);
         $this->assertEquals('Marge', $people[1]->name);
         $this->assertEquals('Apu', $people[2]->name);
+    }
+
+    public function testPaginateUsingScope() {
+        $malePeople = $this->repository->scope('male')->paginate();
+        $this->assertEquals(2, $malePeople->total());
+        $malePeople = $malePeople->items();
+        $this->assertEquals("Homer", $malePeople[0]->name);
+        $this->assertEquals("Apu", $malePeople[1]->name);
     }
 
     public function testPaginateWith() {
@@ -225,11 +248,25 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Homer', $homer->name);
     }
 
+    public function testFindOneByUsingScope() {
+        $homer = $this->repository->scope('male')->findOneBy('name', 'Homer');
+        $this->assertEquals("Homer", $homer->name);
+
+        $marge = $this->repository->scope('male')->findOneBy('name', 'Marge');
+        $this->assertNull($marge);
+    }
+
     public function testFindAllBy() {
         $people = $this->repository->findAllBy('id', 1, '>');
         $this->assertEquals(2, $people->count());
         $this->assertEquals('Marge', $people[0]->name);
         $this->assertEquals('Apu', $people[1]->name);
+    }
+
+    public function testFindAllByUsingScope() {
+        $malePeople = $this->repository->scope('male')->findAllBy('id', 1, '>');
+        $this->assertEquals(1, $malePeople->count());
+        $this->assertEquals("Apu", $malePeople[0]->name);
     }
 
     public function testUpdateSkipsRelations() {
