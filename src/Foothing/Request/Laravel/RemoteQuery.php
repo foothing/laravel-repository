@@ -43,7 +43,7 @@ class RemoteQuery extends AbstractRemoteQuery {
     }
 
     protected static function parseValue($raw) {
-        if ($raw == 'null') {
+        if ($raw === 'null') {
             return null;
         }
         return preg_replace("/\*/", "%", $raw);
