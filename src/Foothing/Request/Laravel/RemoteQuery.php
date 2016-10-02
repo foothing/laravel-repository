@@ -13,12 +13,10 @@ class RemoteQuery extends AbstractRemoteQuery {
         $query = new RemoteQuery();
 
         if (! $input) {
-            Log::debug("Remote query skipping because of empty input");
             return $query;
         }
 
         if (property_exists($input, 'sort') && $input->sort && property_exists($input->sort, 'field')) {
-            Log::debug("Remote query applying sort criteria");
             $query->sortField = $input->sort->field;
             $query->sortDirection = property_exists($input->sort, 'direction') && $input->sort->direction ? $input->sort->direction : 'asc';
             $query->sortEnabled = true;
@@ -28,7 +26,6 @@ class RemoteQuery extends AbstractRemoteQuery {
 
             foreach ($input->filter->fields as $field) {
                 if (property_exists($field, 'name') && property_exists($field, 'value') && $field->value !== null) {
-                    Log::debug("Remote query applying filter " . $field->name);
                     $query->filters[] = (object)[
                         'name' => $field->name,
                         'value' => self::parseValue($field->value),
@@ -43,7 +40,7 @@ class RemoteQuery extends AbstractRemoteQuery {
     }
 
     protected static function parseValue($raw) {
-        if ($raw == 'null') {
+        if ($raw === 'null') {
             return null;
         }
         return preg_replace("/\*/", "%", $raw);
