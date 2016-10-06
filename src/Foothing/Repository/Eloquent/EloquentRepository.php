@@ -124,6 +124,12 @@ class EloquentRepository implements RepositoryInterface {
         return $this->finalize($queryBuilder->with($this->eagerLoad)->paginate($limit));
     }
 
+    public function count() {
+        $queryBuilder = $this->applyScope();
+        $queryBuilder = $this->criteria->applyFilters($queryBuilder);
+        return $this->finalize($queryBuilder->count());
+    }
+
     public function create($entity) {
         $this->applyAutoEagerLoading('unit');
 

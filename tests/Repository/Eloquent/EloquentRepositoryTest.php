@@ -182,6 +182,18 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals('Apu', $people[2]->name);
     }
 
+    public function testCount() {
+        $this->assertEquals(3, $this->repository->count());
+    }
+
+    public function testCountWithFilters() {
+        $this->assertEquals(2, $this->repository->filter('id', 1, '>')->count());
+    }
+
+    public function testCountWithScope() {
+        $this->assertEquals(2, $this->repository->scope('male')->count());
+    }
+
     public function testCreate() {
         $person = new Person();
         $person = $this->repository->create($person);

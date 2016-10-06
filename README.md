@@ -41,6 +41,9 @@ $repository->all();
 // Returns all post with Laravel pagination format
 $repository->paginate();
 
+// Return record count
+$repository->filter('name', 'Homer')->count();
+
 // Create, update and delete instances.
 $model = new Post(Input::all());
 $freshMoel = $repository->create($model);
@@ -311,6 +314,8 @@ Scopes only apply on read methods.
 ## Repository API
 
 ```php
+<?php namespace Foothing\Repository;
+
 interface RepositoryInterface {
 
     //
@@ -324,6 +329,7 @@ interface RepositoryInterface {
     public function findAllBy($field, $arg1, $arg2 = null);
     public function all();
     public function paginate($limit = null, $offset = null);
+    public function count();
 
     public function create($entity);
     public function update($entity);
@@ -378,6 +384,14 @@ interface RepositoryInterface {
 
     //
     //
+    //	Scopes.
+    //
+    //
+
+    public function scope($scope);
+
+    //
+    //
     //	Helpers.
     //
     //
@@ -393,10 +407,8 @@ interface RepositoryInterface {
      * @return self
      */
     public function reset();
-
-    public function validationRules();
-    public function validationRulesPartial($partial);
 }
+
 ```
 
 ## RemoteQuery
