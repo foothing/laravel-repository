@@ -1,14 +1,9 @@
 # Laravel repository
-This package includes a set of common PHP and Laravel tools:
-- Repository pattern with Laravel 5 implementation
-- Resources handler
-- A standardized http input reader
+This package provides an implementation of the repository pattern for Laravel 5.
 
 ## Composer installation
 ```
-"require": [
-	"foothing/laravel-repository": "0.5.*"
-]
+composer require foothing/laravel-repository
 ```
 
 ## Basic usage
