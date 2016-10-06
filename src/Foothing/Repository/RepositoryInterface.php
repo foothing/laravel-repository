@@ -13,6 +13,7 @@ interface RepositoryInterface {
     public function findAllBy($field, $arg1, $arg2 = null);
     public function all();
     public function paginate($limit = null, $offset = null);
+    public function count();
 
     public function create($entity);
     public function update($entity);

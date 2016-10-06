@@ -41,6 +41,9 @@ $repository->all();
 // Returns all post with Laravel pagination format
 $repository->paginate();
 
+// Return record count
+$repository->filter('name', 'Homer')->count();
+
 // Create, update and delete instances.
 $model = new Post(Input::all());
 $freshMoel = $repository->create($model);
@@ -308,9 +311,25 @@ $malePeople = $repository->scope('male')->findAllBy('name', 'John');
 
 Scopes only apply on read methods.
 
+## Global Scopes
+You can define a global scope for each repository implementation,
+which might come handy to restrict records access globally.
+
+Just set
+
+```php
+protected $globalScope = 'whatever';
+```
+
+in your repository. The global scope must match an Eloquent scope.
+Note that if you use explicit scopes, i.e. `$repository->scope('male')`,
+your global scope will be ignored.
+
 ## Repository API
 
 ```php
+<?php namespace Foothing\Repository;
+
 interface RepositoryInterface {
 
     //
@@ -324,6 +343,7 @@ interface RepositoryInterface {
     public function findAllBy($field, $arg1, $arg2 = null);
     public function all();
     public function paginate($limit = null, $offset = null);
+    public function count();
 
     public function create($entity);
     public function update($entity);
@@ -378,6 +398,14 @@ interface RepositoryInterface {
 
     //
     //
+    //	Scopes.
+    //
+    //
+
+    public function scope($scope);
+
+    //
+    //
     //	Helpers.
     //
     //
@@ -393,10 +421,8 @@ interface RepositoryInterface {
      * @return self
      */
     public function reset();
-
-    public function validationRules();
-    public function validationRulesPartial($partial);
 }
+
 ```
 
 ## RemoteQuery

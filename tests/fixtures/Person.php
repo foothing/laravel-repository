@@ -27,4 +27,8 @@ class Person extends \Illuminate\Database\Eloquent\Model implements \Foothing\Re
     public function scopeMale($query) {
         return $query->whereIn('id', [1, 3]);
     }
+
+    public function scopeFunny($query) {
+        return $query->where('name', 'Homer');
+    }
 }
