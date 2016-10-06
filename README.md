@@ -311,6 +311,20 @@ $malePeople = $repository->scope('male')->findAllBy('name', 'John');
 
 Scopes only apply on read methods.
 
+## Global Scopes
+You can define a global scope for each repository implementation,
+which might come handy to restrict records access globally.
+
+Just set
+
+```php
+protected $globalScope = 'whatever';
+```
+
+in your repository. The global scope must match an Eloquent scope.
+Note that if you use explicit scopes, i.e. `$repository->scope('male')`,
+your global scope will be ignored.
+
 ## Repository API
 
 ```php

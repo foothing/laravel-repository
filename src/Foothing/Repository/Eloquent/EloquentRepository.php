@@ -41,6 +41,13 @@ class EloquentRepository implements RepositoryInterface {
      */
     protected $scope;
 
+    /**
+     * @var string
+     * Global scope applied on every query. It will be ignored if
+     * an explicit $scope has been set.
+     */
+    protected $globalScope;
+
     public function __construct(\Illuminate\Database\Eloquent\Model $model) {
         $this->setModel($model);
         $this->criteria = new EloquentCriteria();
@@ -237,14 +244,19 @@ class EloquentRepository implements RepositoryInterface {
     }
 
     protected function applyScope() {
-        if (! $this->scope) {
+        // Explicit scopes have priority.
+        if ($this->scope) {
+            $scope = $this->scope;
+        } elseif ($this->globalScope) {
+            $scope = $this->globalScope;
+        } else {
             return $this->model;
         }
 
-        $queryBuilder = $this->model->{$this->scope}();
+        $queryBuilder = $this->model->{$scope}();
 
         if (! $queryBuilder instanceof \Illuminate\Database\Eloquent\Builder) {
-            throw new \Exception("Scope {$this->scope} is not valid.");
+            throw new \Exception("Scope {$scope} is not valid.");
         }
 
         return $queryBuilder;

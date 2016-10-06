@@ -76,6 +76,13 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals("Apu", $malePeople[1]->name);
     }
 
+    public function testAllUsingGlobaleScope() {
+        $repository = new \PersonRepository(new Person());
+        $malePeople = $repository->all();
+        $this->assertEquals(1, $malePeople->count());
+        $this->assertEquals("Homer", $malePeople[0]->name);
+    }
+
     public function testAllWith() {
         $people = $this->repository->with(['roles', 'children'])->all();
         $this->assertEquals(3, count($people));
@@ -139,6 +146,14 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertEquals("Apu", $malePeople[1]->name);
     }
 
+    public function testPaginateUsingGlobaleScope() {
+        $repository = new \PersonRepository(new Person());
+        $funnyPeople = $repository->paginate();
+        $this->assertEquals(1, $funnyPeople->total());
+        $funnyPeople = $funnyPeople->items();
+        $this->assertEquals("Homer", $funnyPeople[0]->name);
+    }
+
     public function testPaginateWith() {
         $people = $this->repository->with(['roles', 'children'])->paginate();
         $this->assertEquals(3, $people->total());
@@ -192,6 +207,12 @@ class EloquentRepositoryTest extends BaseTestCase {
 
     public function testCountWithScope() {
         $this->assertEquals(2, $this->repository->scope('male')->count());
+    }
+
+    public function testCountWithGlobalScope() {
+        $repository = new \PersonRepository(new Person());
+        $funnyPeople = $repository->count();
+        $this->assertEquals(1, $funnyPeople);
     }
 
     public function testCreate() {
@@ -268,6 +289,15 @@ class EloquentRepositoryTest extends BaseTestCase {
         $this->assertNull($marge);
     }
 
+    public function testFindOneByUsingGlobalScope() {
+        $repository = new \PersonRepository(new Person());
+        $homer = $repository->findOneBy('name', 'Homer');
+        $this->assertEquals("Homer", $homer->name);
+
+        $marge = $repository->findOneBy('name', 'Marge');
+        $this->assertNull($marge);
+    }
+
     public function testFindAllBy() {
         $people = $this->repository->findAllBy('id', 1, '>');
         $this->assertEquals(2, $people->count());
@@ -279,6 +309,13 @@ class EloquentRepositoryTest extends BaseTestCase {
         $malePeople = $this->repository->scope('male')->findAllBy('id', 1, '>');
         $this->assertEquals(1, $malePeople->count());
         $this->assertEquals("Apu", $malePeople[0]->name);
+    }
+
+    public function testFindAllByUsingGlobaleScope() {
+        $repository = new \PersonRepository(new Person());
+        $funnyPeople = $repository->findAllBy('id', 4, '<');
+        $this->assertEquals(1, $funnyPeople->count());
+        $this->assertEquals("Homer", $funnyPeople[0]->name);
     }
 
     public function testUpdateSkipsRelations() {
@@ -355,5 +392,13 @@ class EloquentRepositoryTest extends BaseTestCase {
     public function testDetach_fails_if_relation_is_not_many_to_many() {
         $this->setExpectedException('Exception');
         $this->repository->detach(Person::find(1), 'children', new \Son());
+    }
+
+    public function test_scope_overwrite_global_scope() {
+        $repository = new \PersonRepository(new Person());
+        $malePeople = $repository->scope('male')->all();
+        $this->assertEquals(2, $malePeople->count());
+        $this->assertEquals("Homer", $malePeople[0]->name);
+        $this->assertEquals("Apu", $malePeople[1]->name);
     }
 }
