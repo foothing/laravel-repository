@@ -22,6 +22,7 @@ class BaseTestCase extends \Orchestra\Testbench\TestCase {
 
     public function setUp() {
         parent::setUp();
+
         $this->artisan('migrate', [
             '--database'	=>	'testbench',
             '--realpath'	=> 	realpath(__DIR__ . '/database'),
